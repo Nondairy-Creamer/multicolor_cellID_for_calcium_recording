@@ -1,4 +1,4 @@
-function [red, green] = load_volumes_from_dat(data_folder, stacks_to_grab)
+function [red, green] = load_calcium_from_dat(data_folder, stacks_to_grab)
     num_stacks = length(stacks_to_grab);
     
     hiResData_path = fullfile(data_folder, 'hiResData.mat');

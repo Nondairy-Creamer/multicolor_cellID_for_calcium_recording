@@ -6,8 +6,8 @@ function convert_multicolor_to_neuropal_input()
     data_folder = uigetdir('/home/mcreamer/Documents/data_sets/neuropal/creamer');
 
     CyOFP_channel = 4;
-    data = load(fullfile(data_folder, 'mixed.mat'));
-    data = permute(data.frames, [3, 4, 1, 2]);
+    data = load_multicolor_from_dat(data_folder);
+    data = permute(data, [2, 1, 4, 3]);
     channels_to_keep = [0, 3, CyOFP_channel, 7, 8]+1;
     data = data(:,:,:,channels_to_keep);
 
@@ -67,5 +67,7 @@ function convert_multicolor_to_neuropal_input()
          'flipY', 'flipZ', 'rotation');
 
     old_file = fullfile(data_folder, 'neuropal_data.mat');
+    delete(old_file);
+    old_file = fullfile(data_folder, 'neuropal_data_ID.mat');
     delete(old_file);
 end

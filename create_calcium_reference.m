@@ -5,7 +5,7 @@ function create_calcium_reference()
     
     data_folder = uigetdir([], 'Choose the calcium imaging data folder');
 
-    [red_volumes, ~] = load_volumes_from_dat(data_folder, stacks_to_grab);
+    [red_volumes, ~] = load_calcium_from_dat(data_folder, stacks_to_grab);
 
     red_average = red_volumes{1}(:, :, frames_to_keep);
 
@@ -25,9 +25,11 @@ function create_calcium_reference()
     noise(:, :, :, 4) = 0;
     volume_with_noise = red_average + noise;
     
-    alignments = load(fullfile(data_folder, 'alignments.mat'));
-    alignments = alignments.alignments;
-    volume_with_noise = volume_with_noise - mean(alignments.background(:));
+    cmos_background_value = 400;
+%     alignments = load(fullfile(data_folder, 'alignments.mat'));
+%     alignments = alignments.alignments;
+%     volume_with_noise = volume_with_noise - mean(alignments.background(:));
+    volume_with_noise = volume_with_noise - cmos_background_value;
 
     % get number of pixels in xyz
     pixels = size(volume_with_noise);
@@ -93,5 +95,7 @@ function create_calcium_reference()
     
     % remove old neuropal files so neuropal doesn't load the wrong thing
     old_file = fullfile(data_folder, 'calcium_data_average_stack.mat');
+    delete(old_file);
+    old_file = fullfile(data_folder, 'calcium_data_average_stack_ID.mat');
     delete(old_file);
 end

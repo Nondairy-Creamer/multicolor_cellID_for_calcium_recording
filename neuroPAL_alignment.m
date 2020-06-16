@@ -14,6 +14,8 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
     
     if isempty(distance_threshold)
         remove_outliers = false;
+    else
+        remove_outliers = true;
     end
     
     fixed_initial = fixed_points;
@@ -59,7 +61,7 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
     
     % take the assignments and convert the indicies to the original vector
     % before we removed any points
-    new_assignments = zeros(size(fixed_in, 1), 1);
+    new_assignments = zeros(size(fixed_initial, 1), 1);
     
     for aa = 1:length(assignment)
         if (assignment(aa) ~= 0)
@@ -86,7 +88,7 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
     new_assignments(assignment_distance > max_allowed_assignment_distance) = 0;
     assignment_distance(assignment_distance > max_allowed_assignment_distance) = -1;
     
-    save(fullfile(save_path, 'align_data'), 'fixed_initial', 'adjusted_initial', 'new_assignments');
+    save(fullfile(save_path, 'calcium_to_neuropal_alignment.mat'), 'fixed_initial', 'adjusted_initial', 'new_assignments');
     
     %% plotting
     
