@@ -48,6 +48,8 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
     
     stack = stack ./ exposure_time;
     
+    stack = permute(stack, [1, 2, 4, 3]);
+    
     fclose(Fid);
 end
 

@@ -13,14 +13,14 @@ function align_multicolor_to_calcium_imaging()
     % will be removed, then the cell body locations are aligned again
     % if distance_threshold is empty, the cell body locations will only be
     % registered once without removing any neurons
-    distance_threshold = 3;
+    distance_threshold = 10;
     
     % after identities linking multicolor to calcium data, we remove links
     % that are too far apart from 
-    max_allowed_assignment_distance = 5;
+    max_allowed_assignment_distance = 10;
     
     % the neuroPAL_alignment can plot some figures showing assignments
-    plot_alignment_figures = false;
+    plot_alignment_figures = true;
     
     %% select multicolor folder and calcium data folder
     % multicolor
@@ -42,8 +42,6 @@ function align_multicolor_to_calcium_imaging()
     
     adjusted_in = readmatrix(fullfile(multicolor_folder, 'neuropal_data.csv'));
     adjusted_points = adjusted_in(:, 6:8);
-    adjusted_points(:, 3) = adjusted_points(:, 3) * 33/50;
-    adjusted_points = adjusted_points(:, [2, 1, 3]);
     
     %% align multicolor and calcium imaging
     save_path = calcium_folder;

@@ -1,7 +1,7 @@
 function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_threshold, max_allowed_assignment_distance, plot_alignment_figures)
     
     if nargin < 4
-        distance_threshold = 3;
+        distance_threshold = 5;
     end
     
     if nargin < 5
@@ -20,14 +20,25 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
     
     fixed_initial = fixed_points;
     adjusted_initial = adjusted_points;
-
+    
+%     adjusted_points(:, 3) = adjusted_points(:, 3) * 33/50;
+    adjusted_points = adjusted_points(:, [2, 1, 3]);
+    adjusted_points(:, 2) = -adjusted_points(:, 2);
+    
+    
     fixed_cloud = pointCloud(fixed_points);
     adjusted_cloud = pointCloud(adjusted_points);
 
     [~, adjusted_cloud_registered] = pcregistercpd(adjusted_cloud, fixed_cloud, 'Transform', 'Rigid');
+
     fixed_rotated = fixed_cloud.Location;
     adjusted_rotated = adjusted_cloud_registered.Location;
     [~, adjusted_cloud_registered] = pcregistercpd(adjusted_cloud_registered, fixed_cloud, 'Transform', 'NonRigid');
+    
+    MakeFigure;
+    pcshowpair(adjusted_cloud_registered, fixed_cloud,'MarkerSize',50);
+    legend({'adjusted cloud', 'fixed cloud'}, 'TextColor', 'white');
+    axis equal;
     
     fixed_points_to_keep = true(size(fixed_points, 1), 1);
     adjusted_points_to_keep = true(size(adjusted_points, 1), 1);
@@ -39,7 +50,7 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
         fixed_to_adjusted_min_distance = min(fixed_to_adjusted_distance, [], 2);
         adjusted_to_fixed_min_distance = squeeze(min(fixed_to_adjusted_distance, [], 1));
 
-        fixed_points_to_keep =  fixed_to_adjusted_min_distance < distance_threshold;
+        fixed_points_to_keep = fixed_to_adjusted_min_distance < distance_threshold;
         adjusted_points_to_keep = adjusted_to_fixed_min_distance < distance_threshold;
         
         fixed_points = fixed_points(fixed_points_to_keep, :);
@@ -95,7 +106,7 @@ function neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_t
     if plot_alignment_figures
         MakeFigure;
         histogram(assignment_distance(assignment_distance ~= -1), 50);
-
+        
         MakeFigure;
         pcshowpair(adjusted_cloud, fixed_cloud,'MarkerSize',50);
         legend({'adjusted cloud', 'fixed cloud'}, 'TextColor', 'white');
