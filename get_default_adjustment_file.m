@@ -1,4 +1,4 @@
-function default_aml = get_default_aml(data)
+function default_struct = get_default_adjustment_file(data)
     % get xy step size
     % convert from nanometers to meters
     scale = 1e-9 * [420, 420, 1666]';
@@ -42,23 +42,23 @@ function default_aml = get_default_aml(data)
     rotation = 0;
     roll_val = 0;
     
-    default_aml.data = data;
-    default_aml.pixels = pixels;
-    default_aml.scale = scale;
-    default_aml.original_scale = scale;
-    default_aml.colors = colors;
-    default_aml.channels = channels;
-    default_aml.dicChannel = dicChannel;
-    default_aml.lasers = lasers;
-    default_aml.emissions = emissions;
-    default_aml.data = data;
-    default_aml.original_data = original_data;
-    default_aml.weights = weights;
-    default_aml.gamma_val = gamma_val;
-    default_aml.zero_mask = zero_mask;
-    default_aml.crop_mask = crop_mask;
-    default_aml.flipX = flipX;
-    default_aml.flipY = flipY;
-    default_aml.rotation = rotation;
-    default_aml.roll_val = roll_val;
+    default_struct.data = data;
+    default_struct.pixels = pixels;
+    default_struct.scale = scale;
+    default_struct.original_scale = scale;
+    default_struct.colors = colors;
+    default_struct.channels = channels;
+    default_struct.dicChannel = dicChannel;
+    default_struct.lasers = lasers;
+    default_struct.emissions = emissions;
+    default_struct.data = data;
+    default_struct.original_data = original_data;
+    default_struct.weights = weights;
+    default_struct.gamma_val = gamma_val;
+    default_struct.zero_mask = zero_mask;
+    default_struct.crop_mask = crop_mask;
+    default_struct.flipX = flipX;
+    default_struct.flipY = flipY;
+    default_struct.rotation = rotation;
+    default_struct.roll_val = roll_val;
 end

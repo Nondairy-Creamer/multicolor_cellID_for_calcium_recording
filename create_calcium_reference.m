@@ -28,14 +28,8 @@ function create_calcium_reference()
     
     volume_with_noise = volume_with_noise - cmos_background_value;
 
-    default_aml = get_default_aml(volume_with_noise);
+    default_struct = get_default_adjustment_file(volume_with_noise);
 
-    save_path = fullfile(data_folder, 'calcium_data_average_stack.aml');
-    save(save_path, '-struct', 'default_aml');
-    
-    % remove old neuropal files so neuropal doesn't load the wrong thing
-    old_file = fullfile(data_folder, 'calcium_data_average_stack.mat');
-    delete(old_file);
-    old_file = fullfile(data_folder, 'calcium_data_average_stack_ID.mat');
-    delete(old_file);
+    save_path = fullfile(data_folder, 'calcium_data_average_stack.mat');
+    save(save_path, '-struct', 'default_struct');
 end
