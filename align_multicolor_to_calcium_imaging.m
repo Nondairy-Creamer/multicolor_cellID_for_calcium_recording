@@ -3,11 +3,6 @@ function align_multicolor_to_calcium_imaging()
     % and cell ID locations. See README
     
     %% parameters
-    % to align the multicolor to calcium, it helps to average several
-    % frames of calcium data together to increase the exposure time
-    time_to_average = 2; % seconds
-    
-    
     % multicolor to calcium alignment
     % cell bodies that have no neighbors closer than distance_threshold
     % will be removed, then the cell body locations are aligned again
@@ -31,26 +26,44 @@ function align_multicolor_to_calcium_imaging()
 %     calcium_folder = uigetdir([], 'select the calcium imaging folder');
     calcium_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
     
-    %% get the average 
-%     calcium_reference = create_calcium_reference(calcium_folder);
-    
-    %% find the cell body locations
-    
     %% read cell body locations
-    fixed_in = readmatrix(fullfile(calcium_folder, 'calcium_data_average_stack.csv'));
-    fixed_points = fixed_in(:, 6:8);
+    calcium_in = readmatrix(fullfile(calcium_folder, 'calcium_data_average_stack.csv'));
+    calcium_cell_locations = calcium_in(:, 6:8);
     
-    adjusted_in = readmatrix(fullfile(multicolor_folder, 'neuropal_data.csv'));
-    adjusted_points = adjusted_in(:, 6:8);
+    multicolor_in = readmatrix(fullfile(multicolor_folder, 'neuropal_data.csv'));
+    multicolor_cell_locations = multicolor_in(:, 6:8);
+    multicolor_cell_locations_permuted = multicolor_cell_locations(:, [2, 1, 3]);
+    multicolor_cell_locations_permuted(:, 2) = -multicolor_cell_locations_permuted(:, 2);
     
     %% align multicolor and calcium imaging
     save_path = calcium_folder;
-    neuroPAL_alignment(fixed_points, adjusted_points, save_path, distance_threshold, max_allowed_assignment_distance, plot_alignment_figures)
-    
-    %% align calcium multicolor cell bodies and our cell bodies
-    
-    
-    %% create a spreadsheet with cell body locations and IDs
+    [assignments, calcium_rotated, multicolor_rotated, assignment_distance] = get_pointcloud_assignments(calcium_cell_locations, multicolor_cell_locations_permuted, distance_threshold, max_allowed_assignment_distance);
 
+    save(fullfile(save_path, 'calcium_to_neuropal_alignment.mat'), 'calcium_cell_locations', 'multicolor_cell_locations', 'assignments');
 
+    %% plot alignment    
+    if plot_alignment_figures
+        % plot histogram of distances between assigned pairs
+        MakeFigure;
+        histogram(assignment_distance(assignment_distance ~= -1), 50);
+
+        MakeFigure;
+        scatter3(multicolor_rotated(:, 1), multicolor_rotated(:, 2), multicolor_rotated(:, 3), 'X', 'MarkerEdgeColor', 'r');
+        hold on;
+        scatter3(calcium_rotated(:, 1), calcium_rotated(:, 2), calcium_rotated(:, 3), 'O', 'MarkerEdgeColor', 'b');
+
+        for aa = 1:length(assignments)
+            if assignments(aa) ~= 0
+                x_val = [calcium_rotated(aa, 1) multicolor_rotated(assignments(aa), 1)];
+                y_val = [calcium_rotated(aa, 2) multicolor_rotated(assignments(aa), 2)];
+                z_val = [calcium_rotated(aa, 3) multicolor_rotated(assignments(aa), 3)];
+
+                plot3(x_val, y_val, z_val, 'k');
+            end
+        end
+
+        hold off;
+        legend({'adjusted cloud', 'fixed cloud'}, 'TextColor', 'black');
+        axis equal;
+    end
 end

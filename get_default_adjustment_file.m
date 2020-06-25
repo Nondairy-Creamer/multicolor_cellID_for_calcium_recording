@@ -1,36 +1,6 @@
 function default_struct = get_default_adjustment_file(data)
-    % get xy step size
-    % convert from nanometers to meters
-    scale = 1e-9 * [420, 420, 1666]';
-
-    % we don't have dic, set to gcamp for now?
+    scale = 1e-3 * [420, 420, 1666]';
     dicChannel = 2;
-
-    % set lasers, when unmixed this isn't that informative
-    lasers = [405, 488, nan, 561, 561]';
-
-    % color channels according to neuropal paper
-    colors = [0,	0,      255;
-              255,	255,	255;
-              0,	255,	0;
-              255,	255,	255;
-              255,	0,      0];
-
-    channels = {'Ch1-tagBFP2';
-                'Ch2-GCaMP6s';
-                'Ch3-CyOFP';
-                'Ch4-tagRFPt';
-                'Ch5-mNeptune';};
-    
-    % size of the xyz data
-    pixels = size(data);
-    pixels = pixels(1:3);
-    
-    emissions =  [371.4500,  469.0700;
-                  620.0100,  758.4800;
-                       NaN,       NaN;
-                  620.0100,  758.4800;
-                  620.0100,  758.4800];
     
     original_data = data;
     weights = ones(5, 1)/2;
@@ -43,14 +13,9 @@ function default_struct = get_default_adjustment_file(data)
     roll_val = 0;
     
     default_struct.data = data;
-    default_struct.pixels = pixels;
     default_struct.scale = scale;
     default_struct.original_scale = scale;
-    default_struct.colors = colors;
-    default_struct.channels = channels;
     default_struct.dicChannel = dicChannel;
-    default_struct.lasers = lasers;
-    default_struct.emissions = emissions;
     default_struct.data = data;
     default_struct.original_data = original_data;
     default_struct.weights = weights;
