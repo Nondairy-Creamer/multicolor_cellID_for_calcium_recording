@@ -1,4 +1,4 @@
-function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_assignments(fixed_points, adjusted_points, tracked_neurons, assignment_algorithm, distance_threshold, max_allowed_assignment_distance)
+function [assignments, fixed_rotated, adjusted_rotated, assignment_distance] = get_pointcloud_assignments(fixed_points, adjusted_points, assignment_algorithm, distance_threshold, max_allowed_assignment_distance)
     % _r means it was registered with cpd rigid
     % _nr means it was registered with cpd nonrigid
     % _o means outliers were removed
@@ -19,9 +19,10 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     
     fixed_cloud = pointCloud(fixed_points);
     adjusted_cloud = pointCloud(adjusted_points);
-    
+
     [~, adjusted_cloud_r] = pcregistercpd(adjusted_cloud, fixed_cloud, 'Transform', 'Rigid');
 
+    fixed_rotated = fixed_cloud.Location;
     adjusted_rotated = adjusted_cloud_r.Location;
 %     [~, adjusted_cloud_r_nr] = pcregistercpd(adjusted_cloud_r, fixed_cloud, 'Transform', 'NonRigid');
     adjusted_cloud_r_nr = adjusted_cloud_r;
@@ -31,7 +32,8 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     adjusted_points_to_keep = true(size(adjusted_points, 1), 1);
     
     if remove_outliers
-        fixed_to_adjusted_distance = get_point_cloud_distance(fixed_cloud.Location, adjusted_cloud_r_nr.Location);
+        fixed_to_adjusted_distance = fixed_cloud.Location - permute(adjusted_cloud_r_nr.Location, [3, 2, 1]);
+        fixed_to_adjusted_distance = squeeze(sqrt(sum(fixed_to_adjusted_distance.^2, 2)));
         fixed_to_adjusted_min_distance = min(fixed_to_adjusted_distance, [], 2);
         adjusted_to_fixed_min_distance = squeeze(min(fixed_to_adjusted_distance, [], 1));
 
@@ -47,10 +49,11 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
         [~, adjusted_cloud_r_nr_o_r] = pcregistercpd(adjusted_cloud_r_nr_o, fixed_cloud_o, 'Transform', 'Rigid');
         [~, adjusted_cloud_r_nr_o_r_nr] = pcregistercpd(adjusted_cloud_r_nr_o_r, fixed_cloud_o, 'Transform', 'NonRigid');
     end
+
+    fixed_to_adjusted_distance = fixed_cloud_o.Location - permute(adjusted_cloud_r_nr_o_r_nr.Location, [3, 2, 1]);
+    fixed_to_adjusted_distance = squeeze(sqrt(sum(fixed_to_adjusted_distance.^2, 2)));
         
     %% assign IDs
-    fixed_to_adjusted_distance = get_point_cloud_distance(fixed_cloud_o.Location, adjusted_cloud_r_nr_o_r_nr.Location);
-
     switch assignment_algorithm
         case 'hungarian'
             [assignment_raw, cost] = munkres(fixed_to_adjusted_distance);
@@ -62,7 +65,7 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     
     % assignment IDs are in the order of the vector with outliers removed
     % get assignments IDs where outliers weren't removed
-    assignments = zeros(size(fixed_points, 1), 1);
+    assignments = zeros(size(fixed_rotated, 1), 1);
     
     for aa = 1:length(assignment_raw)
         if (assignment_raw(aa) ~= 0)
@@ -78,11 +81,11 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     end
     
     %% calculate assignment distance
-    assignment_distance = zeros(size(fixed_points, 1), 1) - 1;
+    assignment_distance = zeros(size(fixed_rotated, 1), 1) - 1;
     
-    for ii = 1:size(fixed_points, 1)
+    for ii = 1:size(fixed_rotated, 1)
         if assignments(ii) ~= 0
-            assignment_distance(ii) = sqrt(sum((fixed_points(ii, :) - adjusted_rotated(assignments(ii), :)).^2));
+            assignment_distance(ii) = sqrt(sum((fixed_rotated(ii, :) - adjusted_rotated(assignments(ii), :)).^2));
         end
     end
     
@@ -90,9 +93,9 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     assignment_distance(assignment_distance > max_allowed_assignment_distance) = -1;
 end
 
-function cloud1_to_cloud2_distance = get_point_cloud_distance(cloud1, cloud2)
-    cloud1_to_cloud2_distance = cloud1 - permute(cloud2, [3, 2, 1]);
-    cloud1_to_cloud2_distance = squeeze(sqrt(sum(cloud1_to_cloud2_distance.^2, 2)));
+function distance = get_point_cloud_distance(cloud1, cloud2)
+    cloud1_to_adjusted_distance = cloud1 - permute(cloud2, [3, 2, 1]);
+    fixed_to_adjusted_distance = squeeze(sqrt(sum(fixed_to_adjusted_distance.^2, 2)));
 end
 
 function assignment = nearest_neighbor_assignment(fixed_to_adjusted_distance)

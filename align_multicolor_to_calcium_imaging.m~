@@ -37,7 +37,7 @@ function align_multicolor_to_calcium_imaging()
     calcium_cell_locations = calcium_in(:, 6:8);
     
     multicolor_in = readmatrix(fullfile(multicolor_folder, 'neuropal_data.csv'));
-    multicolor_cell_locations = multicolor_in(:, 6:8);
+    multicolor_cell_locations = multicolor_in(randp, 6:8);
     multicolor_cell_locations_permuted = multicolor_cell_locations(:, [2, 1, 3]);
     multicolor_cell_locations_permuted(:, 2) = -multicolor_cell_locations_permuted(:, 2);
     

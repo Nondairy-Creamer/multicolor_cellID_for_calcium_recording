@@ -19,7 +19,6 @@ The progrma will create references for each .dat file in that folder and any sub
 This generates calcium_data_average_stack.mat
 
 Load the AML into the NeuroPAL software
-Uncheck R, G, B and check W
 Preprocessing > Artifact Removal > Manual
 Draw a region around any autofluorescence in the gut and any other oddities
 Auto-Detect
@@ -27,7 +26,7 @@ Auto-ID All. The IDs are random, but the software won't save cell locations with
 Analysis > Save ID Info (click no on pop up)
 
 Step 3a
-Run create_multicolor_adjustment_file.m on the multicolor folder
+Run create_multicolor_adjustment_file.m on the brainscanner folder
 The program will create a file for each .dat file in that folder and any subfolders
 This generates multicolor_adjustment.mat
 
