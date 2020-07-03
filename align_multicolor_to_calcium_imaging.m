@@ -23,15 +23,14 @@ function align_multicolor_to_calcium_imaging()
     assignment_algorithm = 'nearest';
 %     assignment_algorithm = 'hungarian';
     
-    %% select multicolor folder and calcium data folder
-    % multicolor
-%     multicolor_folder = uigetdir([], 'select the multicolor imaging folder');
-    multicolor_folder = '/home/mcreamer/Documents/data_sets/neuropal/creamer/20200130/multicolorworm_20200130_145049';
+    %% select brainscanner folder
+    calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'select the brainscanner folder');
+    multicolor_search = dir(fullfile(calcium_folder, 'multicolor*'));
+    multicolor_folder = fullfile(multicolor_search.folder, multicolor_search.name);
     
-    % calcium
-%     calcium_folder = uigetdir([], 'select the calcium imaging folder');
-    calcium_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
-    
+%     calcium_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
+%     multicolor_folder = '/home/mcreamer/Documents/data_sets/neuropal/creamer/20200130/multicolorworm_20200130_145049';
+%     
     %% read cell body locations
     calcium_in = readmatrix(fullfile(calcium_folder, 'calcium_data_average_stack.csv'));
     calcium_cell_locations = calcium_in(:, 6:8);

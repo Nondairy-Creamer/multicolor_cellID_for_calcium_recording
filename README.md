@@ -5,6 +5,7 @@ https://github.com/amin-nejat/CELL_ID
 
 Step 1
 Record multicolor and calcium data
+Move the multicolor imaging folder in the calcium imaging "brainscanner" folder
 
 Steps 2 and 3 can be done in parallel
 
@@ -14,8 +15,7 @@ using the 3dbrain pipeline
 https://github.com/leiferlab/3dbrain
 
 Step 2b
-Run create_calcium_reference.m
-The progrma will create references for each .dat file in that folder and any subfolders
+Run create_calcium_reference.m and select the brainscanner folder
 This generates calcium_data_average_stack.mat
 
 Load the AML into the NeuroPAL software
@@ -26,8 +26,7 @@ Auto-ID All. The IDs are random, but the software won't save cell locations with
 Analysis > Save ID Info (click no on pop up)
 
 Step 3a
-Run create_multicolor_adjustment_file.m on the brainscanner folder
-The program will create a file for each .dat file in that folder and any subfolders
+Run create_multicolor_adjustment_file.m and select the multicolor folder
 This generates multicolor_adjustment.mat
 
 Run adjust_multicolor_image and select the multicolor_adjustment.mat file in the multicolor folder
