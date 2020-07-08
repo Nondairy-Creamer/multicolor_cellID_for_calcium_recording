@@ -1,14 +1,10 @@
-function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_assignments(fixed_points, adjusted_points, tracked_neurons, assignment_algorithm, distance_threshold, max_allowed_assignment_distance)
+function [multicolor_assignments, tracked_assignments, adjusted_rotated] = get_pointcloud_assignments(fixed_points, adjusted_points, tracked_points, assignment_algorithm, distance_threshold)
     % _r means it was registered with cpd rigid
     % _nr means it was registered with cpd nonrigid
     % _o means outliers were removed
 
     if nargin < 3
         distance_threshold = 5;
-    end
-    
-    if nargin < 4
-        max_allowed_assignment_distance = 5;
     end
     
     if isempty(distance_threshold)
@@ -33,7 +29,7 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
     if remove_outliers
         fixed_to_adjusted_distance = get_point_cloud_distance(fixed_cloud.Location, adjusted_cloud_r_nr.Location);
         fixed_to_adjusted_min_distance = min(fixed_to_adjusted_distance, [], 2);
-        adjusted_to_fixed_min_distance = squeeze(min(fixed_to_adjusted_distance, [], 1));
+        adjusted_to_fixed_min_distance = min(fixed_to_adjusted_distance, [], 1)';
 
         fixed_points_to_keep = fixed_to_adjusted_min_distance < distance_threshold;
         adjusted_points_to_keep = adjusted_to_fixed_min_distance < distance_threshold;
@@ -50,44 +46,46 @@ function [assignments, adjusted_rotated, assignment_distance] = get_pointcloud_a
         
     %% assign IDs
     fixed_to_adjusted_distance = get_point_cloud_distance(fixed_cloud_o.Location, adjusted_cloud_r_nr_o_r_nr.Location);
+    tracked_to_adjusted_distance = get_point_cloud_distance(tracked_points, adjusted_cloud_r_nr_o_r_nr.Location);
 
     switch assignment_algorithm
         case 'hungarian'
-            [assignment_raw, cost] = munkres(fixed_to_adjusted_distance);
-            assignment_raw = assignment_raw';
+            [multicolor_assignment_raw, ~] = munkres(fixed_to_adjusted_distance);
+            multicolor_assignment_raw = multicolor_assignment_raw';
+            [tracked_assignment_raw, ~] = munkres(tracked_to_adjusted_distance);
+            tracked_assignment_raw = tracked_assignment_raw';
         
         case 'nearest'
-            assignment_raw = nearest_neighbor_assignment(fixed_to_adjusted_distance);
+            multicolor_assignment_raw = nearest_neighbor_assignment(fixed_to_adjusted_distance);
+            tracked_assignment_raw = nearest_neighbor_assignment(tracked_to_adjusted_distance);
     end
     
     % assignment IDs are in the order of the vector with outliers removed
     % get assignments IDs where outliers weren't removed
-    assignments = zeros(size(fixed_points, 1), 1);
+    multicolor_assignments = zeros(size(fixed_points, 1), 1);
+    tracked_assignments = zeros(size(tracked_points, 1), 1);
     
-    for aa = 1:length(assignment_raw)
-        if (assignment_raw(aa) ~= 0)
+    for aa = 1:length(multicolor_assignment_raw)
+        if multicolor_assignment_raw(aa) ~= 0
             orig_fixed_index = find(fixed_points_to_keep, aa);
 
             orig_fixed_index = orig_fixed_index(end);
 
-            orig_adjusted_index = find(adjusted_points_to_keep, assignment_raw(aa));
+            orig_adjusted_index = find(adjusted_points_to_keep, multicolor_assignment_raw(aa));
             orig_adjuisted_index = orig_adjusted_index(end);
 
-            assignments(orig_fixed_index) = orig_adjuisted_index;
+            multicolor_assignments(orig_fixed_index) = orig_adjuisted_index;
         end
     end
     
-    %% calculate assignment distance
-    assignment_distance = zeros(size(fixed_points, 1), 1) - 1;
-    
-    for ii = 1:size(fixed_points, 1)
-        if assignments(ii) ~= 0
-            assignment_distance(ii) = sqrt(sum((fixed_points(ii, :) - adjusted_rotated(assignments(ii), :)).^2));
+    for tt = 1:length(tracked_assignment_raw)
+        if tracked_assignment_raw(tt) ~= 0
+            orig_adjusted_index = find(adjusted_points_to_keep, tracked_assignment_raw(tt));
+            orig_adjuisted_index = orig_adjusted_index(end);
+
+            tracked_assignments(tt) = orig_adjuisted_index;
         end
     end
-    
-    assignments(assignment_distance > max_allowed_assignment_distance) = 0;
-    assignment_distance(assignment_distance > max_allowed_assignment_distance) = -1;
 end
 
 function cloud1_to_cloud2_distance = get_point_cloud_distance(cloud1, cloud2)

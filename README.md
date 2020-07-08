@@ -18,7 +18,7 @@ Step 2b
 Run create_calcium_reference.m and select the brainscanner folder
 This generates calcium_data_average_stack.mat
 
-Load the AML into the NeuroPAL software
+Load the .mat into the NeuroPAL software
 Preprocessing > Artifact Removal > Manual
 Draw a region around any autofluorescence in the gut and any other oddities
 Auto-Detect
@@ -52,3 +52,6 @@ Analysis > Save ID Info > Click yes on re-ID pop-up if you haven't recently
 
 Step 4
 Run align_multicolor_to_calcium_imaging
+Run check_cell_assignment to check the assignments between multicolor and calcium imaging.
+You can also use this program to make your own assignments and fix incorrect ones
+
