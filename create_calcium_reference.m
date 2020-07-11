@@ -26,7 +26,7 @@ function create_calcium_reference()
     noise(:, :, :, 4) = 0;
     volume_with_noise = red_average + noise;
 
-    volume_with_noise = volume_with_noise - cmos_background_value;
+    volume_with_noise = uint16(volume_with_noise - cmos_background_value);
 
     save_path = fullfile(data_folder, 'calcium_data_average_stack.mat');
     neuropal_input = get_default_neuropal_input(volume_with_noise, save_path);
