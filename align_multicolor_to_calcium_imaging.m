@@ -20,7 +20,7 @@ function align_multicolor_to_calcium_imaging()
 %     assignment_algorithm = 'hungarian';
     
     %% select brainscanner folder
-    calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'select the brainscanner folder');
+    calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
     multicolor_search = dir(fullfile(calcium_folder, 'multicolor*'));
     multicolor_folder = fullfile(multicolor_search.folder, multicolor_search.name);
     
@@ -74,7 +74,7 @@ function align_multicolor_to_calcium_imaging()
 %         MakeFigure;
 %         histogram(assignment_distance(assignment_distance ~= -1), 50);
 
-        MakeFigure;
+        figure;
         scatter3(multicolor_rotated(:, 1), multicolor_rotated(:, 2), multicolor_rotated(:, 3), 'X', 'MarkerEdgeColor', 'r');
         hold on;
         scatter3(calcium_cell_locations(:, 1), calcium_cell_locations(:, 2), calcium_cell_locations(:, 3), 'O', 'MarkerEdgeColor', 'b');
