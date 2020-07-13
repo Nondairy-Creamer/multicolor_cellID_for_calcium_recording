@@ -32,7 +32,7 @@ function align_multicolor_to_calcium_imaging()
     calcium_cell_locations = calcium_in(:, 6:8);
     
     neuropal_output_path = fullfile(multicolor_folder, 'neuropal_data.csv');
-    multicolor_in = readmatrix(neuropal_output_path);
+    multicolor_in = readmatrix(neuropal_output_path);calcium_recording
     multicolor_cell_locations = multicolor_in(:, 6:8);
     multicolor_cell_locations_permuted = multicolor_cell_locations(:, [2, 1, 3]);
     multicolor_cell_locations_permuted(:, 2) = -multicolor_cell_locations_permuted(:, 2);
@@ -40,8 +40,8 @@ function align_multicolor_to_calcium_imaging()
     multicolor_scale = multicolor_data.info.scale;
     
     % save label information
-    multicolor_human_labels = readmatrix(neuropal_output_path, 'OutputType', 'char', 'Range', 'A:A');
-    multicolor_auto_labels = readmatrix(neuropal_output_path, 'OutputType', 'char', 'Range', 'C:C');
+    human_cell_labels = readmatrix(neuropal_output_path, 'OutputType', 'char', 'Range', 'A:A');
+    auto_cell_labels = readmatrix(neuropal_output_path, 'OutputType', 'char', 'Range', 'C:C');
 
     neuropal_in = readmatrix(neuropal_output_path);
     user_labeled = neuropal_in(:, 2)  == 1;
@@ -90,8 +90,8 @@ function align_multicolor_to_calcium_imaging()
     tracked_auto_labels = cell(length(tracked_to_multicolor_assignments), 1);
     for cc = 1:length(tracked_to_multicolor_assignments)
         if tracked_to_multicolor_assignments(cc) ~= 0
-            tracked_human_labels{cc} = multicolor_human_labels{tracked_to_multicolor_assignments(cc)};
-            tracked_auto_labels{cc} = multicolor_auto_labels{tracked_to_multicolor_assignments(cc)};
+            tracked_human_labels{cc} = human_cell_labels{tracked_to_multicolor_assignments(cc)};
+            tracked_auto_labels{cc} = auto_cell_labels{tracked_to_multicolor_assignments(cc)};
         else
             tracked_human_labels{cc} = '';
             tracked_auto_labels{cc} = '';
@@ -106,13 +106,12 @@ function align_multicolor_to_calcium_imaging()
     
     % get the associated calcium data
     calcium_recording = load(fullfile(calcium_folder, 'heatData.mat'));
-    output_struct.calcium_recording.data = calcium_recording.Ratio2;
-    output_struct.calcium_recording.time = calcium_recording.hasPointsTime;
+    output_struct.calcium_recording = calcium_recording.Ratio2;
     
     output_struct.labels.tracked_human_labels = tracked_human_labels;
     output_struct.labels.tracked_auto_labels = tracked_auto_labels;
-    output_struct.labels.multicolor_human_labels = multicolor_human_labels;
-    output_struct.labels.multicolor_auto_labels = multicolor_auto_labels;
+    output_struct.labels.human_labels = human_cell_labels;
+    output_struct.labels.auto_labels = auto_cell_labels;
     output_struct.labels.user_labeled = user_labeled;
     output_struct.labels.auto_confidence = auto_confidence;
     
