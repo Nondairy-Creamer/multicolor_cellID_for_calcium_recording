@@ -8,7 +8,7 @@ function create_calcium_reference()
     data_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
 
     % get volume to calculate center from
-    if use_red_refernece
+    if use_red_reference
         [initial_vols, ~] = load_calcium_from_dat(data_folder, stacks_to_grab(1:2));
     else
         [~, initial_vols] = load_calcium_from_dat(data_folder, stacks_to_grab(1:2));
