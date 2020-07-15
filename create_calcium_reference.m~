@@ -1,6 +1,7 @@
 function create_calcium_reference()
-    frames_to_keep_initial = 1:32;
+    frames_to_keep = 1:32;
     stacks_to_grab = 100:111;
+    num_volumes = length(stacks_to_grab);
     cmos_background_value = 400;
     shift_search_range = 5;
     
@@ -10,34 +11,43 @@ function create_calcium_reference()
     [initial_vols, ~] = load_calcium_from_dat(data_folder, stacks_to_grab(1:2));
     
     %% flip the volumes that are measured backwards
-    odd_vol = initial_vols{1}(:, :, frames_to_keep_initial);
+    new_keep = 2:32;
+    odd_vol = initial_vols{1}(:, :, frames_to_keep);
     odd_size = size(odd_vol);
     odd_vol = reshape(odd_vol, [odd_size(1)*odd_size(2), odd_size(3)]);
     odd_std = std(odd_vol)';
     odd_std = odd_std - odd_std(1);
-    even_vol = initial_vols{2}(:, :, frames_to_keep_initial);
+    even_vol = initial_vols{2}(:, :, frames_to_keep);
     even_size = size(even_vol);
     even_vol = reshape(even_vol, [even_size(1)*even_size(2), even_size(3)]);
     even_std = std(even_vol)';
     even_std = even_std - even_std(1);
-
-    [~, shift_val] = max(xcorr(odd_std, flip(even_std, 1), shift_search_range));
+    
+    even_std_trim = even_std(3:32);
+    odd_std_trim = odd_std(3:32);
+    [~, shift_val] = max(xcorr(odd_std_trim, flip(even_std_trim, 1), shift_search_range));
     shift_val = shift_val - shift_search_range - 1;
     
     if shift_val >= 0
-        frames_to_keep_final = (frames_to_keep_initial(1) + shift_val): frames_to_keep_initial(end);
+        final_frames_to_keep = (frames_to_keep(1) + shift_val): frames_to_keep(end);
     else
-        frames_to_keep_final = frames_to_keep_initial(1): (frames_to_keep_initial(end) + shift_val);
+        final_frames_to_keep = frames_to_keep(1): (frames_to_keep(end) + shift_val);
     end
     
-    [red_volumes, ~] = load_calcium_from_dat(data_folder, stacks_to_grab, frames_to_keep_final);
+    [red_volumes, ~] = load_calcium_from_dat(data_folder, final_frames_to_keep);
 
-    for vv = 2:2:size(red_volumes, 4)
-        red_volumes(:, :, :, vv) = flip(red_volumes(:, :, :, vv), 3);
+    for vv = 1:size(red_volumes, 4)
+        red_volumes(:, :, :, vv) = flip(red_volumes(:, :, :, vv), 4);
     end
     
     %% average volumes together
-    red_average = mean(red_volumes, 4);
+    red_average = red_volumes{1}(:, :, frames_to_keep);
+
+    for dd = 2:num_volumes
+        red_average = red_average + red_volumes{dd}(:, :, frames_to_keep);
+    end
+
+    red_average = red_average / num_volumes;
 
     volume_size = size(red_average);
 

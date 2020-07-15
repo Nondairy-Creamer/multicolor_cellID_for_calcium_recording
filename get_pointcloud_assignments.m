@@ -42,6 +42,9 @@ function [multicolor_assignments, tracked_assignments, adjusted_rotated] = get_p
 
         [~, adjusted_cloud_r_nr_o_r] = pcregistercpd(adjusted_cloud_r_nr_o, fixed_cloud_o, 'Transform', 'Rigid');
         [~, adjusted_cloud_r_nr_o_r_nr] = pcregistercpd(adjusted_cloud_r_nr_o_r, fixed_cloud_o, 'Transform', 'NonRigid');
+    else
+        fixed_cloud_o = fixed_cloud;
+        adjusted_cloud_r_nr_o_r_nr = adjusted_cloud_r_nr;
     end
         
     %% assign IDs

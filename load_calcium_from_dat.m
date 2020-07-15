@@ -1,4 +1,11 @@
-function [red, green] = load_calcium_from_dat(data_folder, stacks_to_grab)
+function [red, green] = load_calcium_from_dat(data_folder, stacks_to_grab, slices_to_keep)
+    if nargin < 3
+        num_slices = [];
+        slices_to_keep = [];
+    else
+        num_slices = length(slices_to_keep);
+    end
+
     num_stacks = length(stacks_to_grab);
     
     hiResData_path = fullfile(data_folder, 'hiResData.mat');
@@ -36,8 +43,17 @@ function [red, green] = load_calcium_from_dat(data_folder, stacks_to_grab)
     
     Fid=fopen(datFile);
     
-    red = cell(num_stacks, 1);
-    green = cell(num_stacks, 1);
+    if isempty(num_slices)
+        red = cell(num_stacks, 1);
+        green = cell(num_stacks, 1);
+    else
+        red_rows = rect1(4) - rect1(2);
+        red_cols = rect1(3) - rect1(1);
+        green_rows = rows - rect1(4);
+        green_cols = rect1(3) - rect1(1);
+        red = zeros(red_rows, red_cols, num_slices, num_stacks);
+        green = zeros(green_rows, green_cols, num_slices, num_stacks);
+    end
     
     for ii = 1:num_stacks
         %select frames to analyze
@@ -48,9 +64,14 @@ function [red, green] = load_calcium_from_dat(data_folder, stacks_to_grab)
 
         pixelValues=fread(Fid,nPix*(length(hiResIdx)),'uint16',0,'l');
         hiResImage=reshape(pixelValues,rows,cols,length(hiResIdx));
-
-        red{ii}=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),:);
-        green{ii}=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),:);
+        
+        if isempty(num_slices)
+            red{ii}=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),:);
+            green{ii}=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),:);
+        else
+            red(:, :, :, ii)=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),slices_to_keep);
+            green(:, :, :, ii)=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),slices_to_keep);
+        end
     end
     
     fclose(Fid);

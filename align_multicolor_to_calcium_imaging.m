@@ -9,6 +9,7 @@ function align_multicolor_to_calcium_imaging()
     % if distance_threshold is empty, the cell body locations will only be
     % registered once without removing any neurons
     distance_threshold = 10;
+    distance_threshold = [];
     
     % stack to align calcium data to
     calcium_index = 100;
@@ -155,7 +156,7 @@ function align_multicolor_to_calcium_imaging()
         end
 
         hold off;
-        legend({'adjusted cloud', 'fixed cloud'}, 'TextColor', 'black');
+        legend({'multicolor', 'calcium', 'tracked calcium'}, 'TextColor', 'black');
         axis equal;
     end
 end
