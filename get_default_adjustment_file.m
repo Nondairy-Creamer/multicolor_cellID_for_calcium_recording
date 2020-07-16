@@ -1,5 +1,5 @@
 function default_struct = get_default_adjustment_file(data)
-    scale = 1e-3 * [420, 420, 1666]';
+    scale = [0.42, 0.42, 50/33]'; % microns
     dicChannel = 2;
     
     original_data = data;

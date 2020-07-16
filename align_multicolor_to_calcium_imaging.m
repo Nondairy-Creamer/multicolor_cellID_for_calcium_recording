@@ -28,6 +28,11 @@ function align_multicolor_to_calcium_imaging()
 %     calcium_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
 %     multicolor_folder = '/home/mcreamer/Documents/data_sets/neuropal/creamer/20200130/multicolorworm_20200130_145049';
 %     
+
+    %% get calcium scale
+    calcium_stack = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
+    calcium_scale = calcium_stack.info.scale;
+        
     %% read cell body locations
     calcium_in = readmatrix(fullfile(calcium_folder, 'calcium_data_average_stack.csv'));
     calcium_cell_locations = calcium_in(:, 6:8);
@@ -48,44 +53,102 @@ function align_multicolor_to_calcium_imaging()
     user_labeled = neuropal_in(:, 2)  == 1;
     auto_confidence = neuropal_in(:, 4);
     
-    %% get tracked cell body locations
-    calcium_stack = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
-    calcium_scale = calcium_stack.info.scale;
-    tracked_cell_locations_in = load(fullfile(calcium_folder, 'PointsStats2.mat'));
-    tracked_cell_locations_in = tracked_cell_locations_in.pointStats2;
-    num_tracked_cells = 0;
+    %% check if alignment already exists
+    use_previous_alignment = false;
     
-    % get number of tracked cells
-    for tt = 1:length(tracked_cell_locations_in)
-        if max(tracked_cell_locations_in(tt).trackIdx) > num_tracked_cells
-            num_tracked_cells = max(tracked_cell_locations_in(tt).trackIdx);
-        end
+    previous_alignment_path = fullfile(calcium_folder, 'calcium_to_multicolor_alignment.mat');
+    
+    if exist(previous_alignment_path, 'file')
+        previous_alignment = load(previous_alignment_path);
+        
+        % check if the files are the same
+        same_multicolor = isequal(multicolor_cell_locations, previous_alignment.locations.multicolor_cell_locations);
+        same_calcium = isequal(calcium_cell_locations, previous_alignment.locations.calcium_cell_locations);
+        
+        use_previous_alignment = same_multicolor && same_calcium;
     end
     
-    % create full array of tracked cell locations
-    tracked_cell_locations = nan(num_tracked_cells, 3);
-    t_loc = calcium_index;
-    while any(isnan(tracked_cell_locations(:)))
-        cell_id_at_t = tracked_cell_locations_in(t_loc).trackIdx;
-        
-        for cc = 1:length(cell_id_at_t)
-            this_cell = cell_id_at_t(cc);
-            if ~any(isnan(this_cell))
-                if any(isnan(tracked_cell_locations(this_cell)))
-                    tracked_cell_locations(cell_id_at_t(cc), :) = tracked_cell_locations_in(t_loc).rawPoints(cc, :);
-                end
+    if use_previous_alignment
+        calcium_to_multicolor_assignments = previous_alignment.assignments.calcium_to_multicolor_assignments;
+        tracked_to_multicolor_assignments = previous_alignment.assignments.tracked_to_multicolor_assignments;
+        tracked_to_multicolor_assignments_user_adjusted = previous_alignment.assignments.tracked_to_multicolor_assignments_user_adjusted;
+        user_assigned_cells = previous_alignment.assignments.user_assigned_cells;
+        tracked_cell_locations = previous_alignment.locations.tracked_cell_locations;
+        rotation = previous_alignment.assignments.rotation;
+        flipX = previous_alignment.assignments.flipX;
+        flipY = previous_alignment.assignments.flipY;
+
+    else
+        %% get tracked cell body locations
+        tracked_cell_locations_in = load(fullfile(calcium_folder, 'PointsStats2.mat'));
+        tracked_cell_locations_in = tracked_cell_locations_in.pointStats2;
+        num_tracked_cells = 0;
+
+        % get number of tracked cells
+        for tt = 1:length(tracked_cell_locations_in)
+            if max(tracked_cell_locations_in(tt).trackIdx) > num_tracked_cells
+                num_tracked_cells = max(tracked_cell_locations_in(tt).trackIdx);
             end
         end
+
+        % create full array of tracked cell locations
+        tracked_cell_locations = nan(num_tracked_cells, 3);
+        t_loc = calcium_index;
+        while any(isnan(tracked_cell_locations(:)))
+            cell_id_at_t = tracked_cell_locations_in(t_loc).trackIdx;
+
+            for cc = 1:length(cell_id_at_t)
+                this_cell = cell_id_at_t(cc);
+                if ~any(isnan(this_cell))
+                    if any(isnan(tracked_cell_locations(this_cell)))
+                        tracked_cell_locations(cell_id_at_t(cc), :) = tracked_cell_locations_in(t_loc).rawPoints(cc, :);
+                    end
+                end
+            end
+
+            t_loc = t_loc + 1;
+        end
+
+        % scale calcium data into microns
+        tracked_cell_locations = tracked_cell_locations .* calcium_scale';
+
+        %% align multicolor and calcium imaging
+        [calcium_to_multicolor_assignments, tracked_to_multicolor_assignments, multicolor_rotated] = get_pointcloud_assignments(calcium_cell_locations, multicolor_cell_locations_permuted, tracked_cell_locations, assignment_algorithm, distance_threshold);
         
-        t_loc = t_loc + 1;
+        tracked_to_multicolor_assignments_user_adjusted = tracked_to_multicolor_assignments;
+        user_assigned_cells = false(size(tracked_to_multicolor_assignments_user_adjusted));
+        
+        rotation = 0;
+        flipX = false;
+        flipY = false;
+        
+        %% plot alignment
+        if plot_alignment_figures
+            % plot histogram of distances between assigned pairs
+    %         MakeFigure;
+    %         histogram(assignment_distance(assignment_distance ~= -1), 50);
+
+            figure;
+            scatter3(multicolor_rotated(:, 1), multicolor_rotated(:, 2), multicolor_rotated(:, 3), 'X', 'MarkerEdgeColor', 'r');
+            hold on;
+            scatter3(calcium_cell_locations(:, 1), calcium_cell_locations(:, 2), calcium_cell_locations(:, 3), 'O', 'MarkerEdgeColor', 'b');
+            scatter3(tracked_cell_locations(:, 1), tracked_cell_locations(:, 2), tracked_cell_locations(:, 3), 's', 'MarkerEdgeColor', 'g');
+
+            for aa = 1:length(calcium_to_multicolor_assignments)
+                if calcium_to_multicolor_assignments(aa) ~= 0
+                    x_val = [calcium_cell_locations(aa, 1) multicolor_rotated(calcium_to_multicolor_assignments(aa), 1)];
+                    y_val = [calcium_cell_locations(aa, 2) multicolor_rotated(calcium_to_multicolor_assignments(aa), 2)];
+                    z_val = [calcium_cell_locations(aa, 3) multicolor_rotated(calcium_to_multicolor_assignments(aa), 3)];
+
+                    plot3(x_val, y_val, z_val, 'k');
+                end
+            end
+
+            hold off;
+            legend({'multicolor', 'calcium', 'tracked calcium'}, 'TextColor', 'black');
+            axis equal;
+        end
     end
-    
-    % scale calcium data into microns
-    tracked_cell_locations = tracked_cell_locations .* calcium_scale';
- 
-    %% align multicolor and calcium imaging
-    save_path = calcium_folder;
-    [calcium_to_multicolor_assignments, tracked_to_multicolor_assignments, multicolor_rotated] = get_pointcloud_assignments(calcium_cell_locations, multicolor_cell_locations_permuted, tracked_cell_locations, assignment_algorithm, distance_threshold);
     
     tracked_human_labels = cell(length(tracked_to_multicolor_assignments), 1);
     tracked_auto_labels = cell(length(tracked_to_multicolor_assignments), 1);
@@ -98,12 +161,6 @@ function align_multicolor_to_calcium_imaging()
             tracked_auto_labels{cc} = '';
         end
     end
-    
-    [~, sort_ids] = sort(tracked_cell_locations(:, 3), 1, 'ascend');
-    tracked_cell_locations = tracked_cell_locations(sort_ids, :);
-    tracked_to_multicolor_assignments = tracked_to_multicolor_assignments(sort_ids, :);
-    tracked_to_multicolor_assignments_user_adjusted = tracked_to_multicolor_assignments;
-    user_assigned_cells = false(size(tracked_to_multicolor_assignments_user_adjusted));
     
     % get the associated calcium data
     calcium_recording = load(fullfile(calcium_folder, 'heatData.mat'));
@@ -127,36 +184,9 @@ function align_multicolor_to_calcium_imaging()
     output_struct.assignments.tracked_to_multicolor_assignments = tracked_to_multicolor_assignments;
     output_struct.assignments.tracked_to_multicolor_assignments_user_adjusted = tracked_to_multicolor_assignments_user_adjusted;
     output_struct.assignments.user_assigned_cells = user_assigned_cells;
-    output_struct.assignments.rotation = 0;
-    output_struct.assignments.flipX = false;
-    output_struct.assignments.flipY = false;
+    output_struct.assignments.rotation = rotation;
+    output_struct.assignments.flipX = flipX;
+    output_struct.assignments.flipY = flipY;
     
-    save(fullfile(save_path, 'calcium_to_multicolor_alignment.mat'), '-struct', 'output_struct');
-    
-    %% plot alignment
-    if plot_alignment_figures
-        % plot histogram of distances between assigned pairs
-%         MakeFigure;
-%         histogram(assignment_distance(assignment_distance ~= -1), 50);
-
-        figure;
-        scatter3(multicolor_rotated(:, 1), multicolor_rotated(:, 2), multicolor_rotated(:, 3), 'X', 'MarkerEdgeColor', 'r');
-        hold on;
-        scatter3(calcium_cell_locations(:, 1), calcium_cell_locations(:, 2), calcium_cell_locations(:, 3), 'O', 'MarkerEdgeColor', 'b');
-        scatter3(tracked_cell_locations(:, 1), tracked_cell_locations(:, 2), tracked_cell_locations(:, 3), 's', 'MarkerEdgeColor', 'g');
-
-        for aa = 1:length(calcium_to_multicolor_assignments)
-            if calcium_to_multicolor_assignments(aa) ~= 0
-                x_val = [calcium_cell_locations(aa, 1) multicolor_rotated(calcium_to_multicolor_assignments(aa), 1)];
-                y_val = [calcium_cell_locations(aa, 2) multicolor_rotated(calcium_to_multicolor_assignments(aa), 2)];
-                z_val = [calcium_cell_locations(aa, 3) multicolor_rotated(calcium_to_multicolor_assignments(aa), 3)];
-
-                plot3(x_val, y_val, z_val, 'k');
-            end
-        end
-
-        hold off;
-        legend({'multicolor', 'calcium', 'tracked calcium'}, 'TextColor', 'black');
-        axis equal;
-    end
+    save(fullfile(calcium_folder, 'calcium_to_multicolor_alignment.mat'), '-struct', 'output_struct');
 end
