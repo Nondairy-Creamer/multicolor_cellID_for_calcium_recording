@@ -6,12 +6,12 @@ function neuropal_input = get_default_neuropal_input(data, path)
     neuropal_input.info.DIC = 2;
     neuropal_input.info.RGBW = [5, 3, 1, 4]';
     neuropal_input.info.GFP = 2;
-    neuropal_input.info.gamma = 1;
+    neuropal_input.info.gamma = ones(3, 1)/2;
 
     neuropal_input.prefs.RGBW = [5, 3, 1, 4]';
     neuropal_input.prefs.DIC = 2;
     neuropal_input.prefs.GFP = 2;
-    neuropal_input.prefs.gamma = 1; %app.gamma_val;
+    neuropal_input.prefs.gamma = ones(3, 1)/2; %app.gamma_val;
     neuropal_input.prefs.rotate.horizontal = false;
     neuropal_input.prefs.rotate.vertical = false;
     neuropal_input.prefs.z_center = round(size(data, 3)/2);
