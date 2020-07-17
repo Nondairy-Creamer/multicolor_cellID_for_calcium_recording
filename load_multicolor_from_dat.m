@@ -7,9 +7,15 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
         nY = 512;
     end
 
+    config = get_config();
+    cmos_background_value = config.cmos_background_value;
+    
+    % z location of the microscope
     piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));
     nZ = length(piezo_position);
     
+    % get each of the color channels recorded during the multicolor
+    % acquisition
     channels = readmatrix(fullfile(data_folder, 'moleculesSequence.txt'), 'OutputType', 'char', 'Range', 'A1', 'Delimiter', '\t');
     nChannel = size(channels,1);
     
@@ -19,6 +25,7 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
     
     exposure_time = zeros(1, 1, nChannel, 1);
     
+    % apply exposure time to each channel
     for cc = 1:nChannel
         for ee = 1:size(exposure_time_labels, 1)
             if strcmp(channels{cc}, exposure_time_labels{ee, 1})
@@ -43,7 +50,6 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
     pixelValues = fread(Fid,frame_size*nFrames + 2,'uint16',0,'l');
     stack = reshape(pixelValues(3:end), [nX, nY, nChannel, nZ]);
     
-    cmos_background_value = 400;
     stack = stack - cmos_background_value;
     
     stack = stack ./ exposure_time;

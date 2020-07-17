@@ -1,18 +1,18 @@
 function align_multicolor_to_calcium_imaging()
-    % before running this code, make sure you have extracted calcium traces
-    % and cell ID locations. See README
+    % align_multicolor_to_calcium_imaging  combines cell location and
+    % identification data from a multicolor image analyzed with the
+    % NeuroPAL software and links the cell IDs to neurons tracked with the
+    % 3dBrain pipeline.
+    % I'll use assignments to refer to assigning cells recorded in the
+    % multicolor light path to cells recorded in the calcium light path
+    % I'll use labels to refer to the cell names (like AVA) identified 
+    % with the NeuroPAL software
     
     %% parameters
-    % multicolor to calcium alignment
-    % cell bodies that have no neighbors closer than distance_threshold
-    % will be removed, then the cell body locations are aligned again
-    % if distance_threshold is empty, the cell body locations will only be
-    % registered once without removing any neurons
-    distance_threshold = 10;
-    distance_threshold = [];
+    config = get_config();
     
     % stack to align calcium data to
-    calcium_index = 100;
+    calcium_index = config.volumes_to_grab(1);
     
     % the neuroPAL_alignment can plot some figures showing assignments
     plot_alignment_figures = true;
@@ -24,10 +24,6 @@ function align_multicolor_to_calcium_imaging()
     calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
     multicolor_search = dir(fullfile(calcium_folder, 'multicolor*'));
     multicolor_folder = fullfile(multicolor_search.folder, multicolor_search.name);
-    
-%     calcium_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
-%     multicolor_folder = '/home/mcreamer/Documents/data_sets/neuropal/creamer/20200130/multicolorworm_20200130_145049';
-%     
 
     %% get calcium scale
     calcium_stack = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
@@ -54,6 +50,9 @@ function align_multicolor_to_calcium_imaging()
     auto_confidence = neuropal_in(:, 4);
     
     %% check if alignment already exists
+    % if a previous alignment exists for the same cell locations, then just
+    % update the labeling data instead of overwriting the assignments.
+    
     use_previous_alignment = false;
     
     previous_alignment_path = fullfile(calcium_folder, 'calcium_to_multicolor_alignment.mat');
@@ -92,6 +91,9 @@ function align_multicolor_to_calcium_imaging()
         end
 
         % create full array of tracked cell locations
+        % tracked cells location in image space is only saved on a frame by
+        % frame basis. Here we create a vector where each entry represents
+        % a unique cell whether or not it is in the current frame
         tracked_cell_locations = nan(num_tracked_cells, 3);
         t_loc = calcium_index;
         while any(isnan(tracked_cell_locations(:)))
@@ -124,10 +126,6 @@ function align_multicolor_to_calcium_imaging()
         
         %% plot alignment
         if plot_alignment_figures
-            % plot histogram of distances between assigned pairs
-    %         MakeFigure;
-    %         histogram(assignment_distance(assignment_distance ~= -1), 50);
-
             figure;
             scatter3(multicolor_rotated(:, 1), multicolor_rotated(:, 2), multicolor_rotated(:, 3), 'X', 'MarkerEdgeColor', 'r');
             hold on;
@@ -150,6 +148,7 @@ function align_multicolor_to_calcium_imaging()
         end
     end
     
+    %% link the multicolor labels to the tracked cells
     tracked_human_labels = cell(length(tracked_to_multicolor_assignments), 1);
     tracked_auto_labels = cell(length(tracked_to_multicolor_assignments), 1);
     for cc = 1:length(tracked_to_multicolor_assignments)
@@ -162,6 +161,7 @@ function align_multicolor_to_calcium_imaging()
         end
     end
     
+    %% save the new alignment data
     % get the associated calcium data
     calcium_recording = load(fullfile(calcium_folder, 'heatData.mat'));
     output_struct.calcium_recording.data = calcium_recording.Ratio2;

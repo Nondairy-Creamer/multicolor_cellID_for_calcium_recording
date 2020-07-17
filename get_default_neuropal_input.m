@@ -1,8 +1,10 @@
 function neuropal_input = get_default_neuropal_input(data, path)
+    config = get_config();
+    
     neuropal_input.data = data;
 
     neuropal_input.info.file = path;
-    neuropal_input.info.scale = [0.42, 0.42, 50/33]'; % microns
+    neuropal_input.info.scale = config.calcium_scale; % microns
     neuropal_input.info.DIC = 2;
     neuropal_input.info.RGBW = [5, 3, 1, 4]';
     neuropal_input.info.GFP = 2;
