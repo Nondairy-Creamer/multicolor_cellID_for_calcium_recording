@@ -8,7 +8,7 @@ function config = get_config()
     
     % choose which volumes to average over. Usually good to average around
     % 2s and start 100 volumes in to avoid issues at the beginning
-    config.volumes_to_grab = 100:111;
+    config.volumes_to_grab = (100:111)+0;
     
     % the camera pixel values have a constant offset from 0
     config.cmos_background_value = 400;

@@ -3,8 +3,8 @@ function [multicolor_assignments, tracked_assignments, adjusted_rotated] = get_p
     % _nr means it was registered with cpd nonrigid
     % _o means outliers were removed
 
-    if nargin < 3
-        distance_threshold = 5;
+    if nargin < 5
+        distance_threshold = [];
     end
     
     if isempty(distance_threshold)

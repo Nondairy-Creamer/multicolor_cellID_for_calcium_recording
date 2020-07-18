@@ -115,7 +115,7 @@ function align_multicolor_to_calcium_imaging()
         tracked_cell_locations = tracked_cell_locations .* calcium_scale';
 
         %% align multicolor and calcium imaging
-        [calcium_to_multicolor_assignments, tracked_to_multicolor_assignments, multicolor_rotated] = get_pointcloud_assignments(calcium_cell_locations, multicolor_cell_locations_permuted, tracked_cell_locations, assignment_algorithm, distance_threshold);
+        [calcium_to_multicolor_assignments, tracked_to_multicolor_assignments, multicolor_rotated] = get_pointcloud_assignments(calcium_cell_locations, multicolor_cell_locations_permuted, tracked_cell_locations, assignment_algorithm);
         
         tracked_to_multicolor_assignments_user_adjusted = tracked_to_multicolor_assignments;
         user_assigned_cells = false(size(tracked_to_multicolor_assignments_user_adjusted));

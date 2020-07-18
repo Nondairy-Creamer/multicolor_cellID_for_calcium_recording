@@ -1,4 +1,4 @@
-function [red, green] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep)
+function [red, green, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep)
     % load_calcium_from_dat  will get all the volumes_to_grab volumes from a
     % calcium recording. All of this code was ripped from the 3dbrain
     % pipeline https://github.com/leiferlab/3dbrain
@@ -58,6 +58,7 @@ function [red, green] = load_calcium_from_dat(data_folder, volumes_to_grab, fram
     if isempty(num_slices)
         red = cell(num_stacks, 1);
         green = cell(num_stacks, 1);
+        z_loc = cell(num_stacks, 1);
     else
         red_rows = rect1(4) - rect1(2);
         red_cols = rect1(3) - rect1(1);
@@ -65,6 +66,7 @@ function [red, green] = load_calcium_from_dat(data_folder, volumes_to_grab, fram
         green_cols = rect1(3) - rect1(1);
         red = zeros(red_rows, red_cols, num_slices, num_stacks);
         green = zeros(green_rows, green_cols, num_slices, num_stacks);
+        z_loc = zeros(num_slices, num_stacks);
     end
     
     % grab the frames associated with each volume
@@ -78,13 +80,17 @@ function [red, green] = load_calcium_from_dat(data_folder, volumes_to_grab, fram
         pixelValues=fread(Fid,nPix*(length(hiResIdx)),'uint16',0,'l');
         hiResImage=reshape(pixelValues,rows,cols,length(hiResIdx));
         
+        
+        
         % put each volume into either a cell array or a matrix
         if isempty(num_slices)
             red{ii}=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),:);
             green{ii}=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),:);
+            z_loc{ii} = hiResData.Z(hiResIdx);
         else
             red(:, :, :, ii)=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),frames_to_keep);
             green(:, :, :, ii)=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),frames_to_keep);
+            z_loc(:, ii) = hiResData.Z(hiResIdx(frames_to_keep));
         end
     end
     
