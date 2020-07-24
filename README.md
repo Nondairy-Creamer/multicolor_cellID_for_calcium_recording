@@ -4,10 +4,10 @@ NeuroPAL worms use 3 fluorophores and a panneuronal marker to enable cell segmen
 ## Setup
 All code is in MATLAB and has been tested in 2019b and 2020a
 
-Download this repo and add it to your MATLAB path
-
-Download the Paninski Lab NeuroPAL software. I suggest putting the code and its dependencies into one folder and adding that entire folder to your MATLAB path.
+Install the Paninski Lab NeuroPAL software. Note that it has 2 other required packages. I suggest putting Multicolor cellID for Calcium Recording, the NeuroPAL code, and the NeuroPAL code dependencies into one folder and adding that entire folder to your MATLAB path.
 https://github.com/amin-nejat/CELL_ID
+
+Download this repo and add it to your MATLAB path
 
 ## Usage
 NOTE: Steps 1 and 2 can be performed in parallel
@@ -15,6 +15,7 @@ NOTE: Steps 1 and 2 can be performed in parallel
 ### Step 0
 Record multicolor and calcium data
 Move the multicolor imaging folder in the calcium imaging "brainscanner" folder
+* Only necessary if you are trying to label calcium data using multicolor data
 
 ### Step 1
 #### S1a
@@ -24,8 +25,8 @@ https://github.com/leiferlab/3dbrain
 
 #### S1b
 Run `create_calcium_reference`
-* select the brainscanner folder
-* generates **calcium_data_average_stack.mat**
+* Select the brainscanner folder
+* Generates **calcium_data_average_stack.mat**
 
 Run `visualize_light`
 In the GUI take the following actions
@@ -39,12 +40,12 @@ In the GUI take the following actions
 ### Step 2
 #### S2a
 Run `create_multicolor_adjustment_file`
-* select the multicolor folder
-* generates **multicolor_adjustment.mat**
+* Select the multicolor folder
+* Generates **multicolor_adjustment.mat**
 
 Run `adjust_multicolor_image`
-* select the **multicolor_adjustment.mat** file in the multicolor folder
-* generates **neuropal_data.mat**
+* Select the **multicolor_adjustment.mat** file in the multicolor folder
+* Generates **neuropal_data.mat**
 
 In the GUI take the following actions:
 * Crop the image before any other manipulations to increase speed.
@@ -52,7 +53,7 @@ In the GUI take the following actions:
 * Standard orientation is to have the worm lying on its right side facing the left
 * Adjust the gamma of the green channel if necessary
 * Remove outliers tool will set everything inside the region to 0
-* see **README_adjust_multicolor_image.md** for more info
+* See **README_adjust_multicolor_image.md** for more info
 
 #### S2b
 Run `visualize_light`
