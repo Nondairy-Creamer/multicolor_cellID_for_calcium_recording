@@ -6,10 +6,7 @@ All code is in MATLAB, and has been tested in 2019b and 2020a
 
 Download this repo and add it to your MATLAB path
 
-Download my forked version of the the Paninski Lab NeuroPAL software. I suggest putting the code and its dependencies into one folder and adding that entire folder to your MATLAB path
-https://github.com/Nondairy-Creamer/CELL_ID
-
-Although we are currently using my fork, I have put the changes from my fork into a pull request. if it gets accepted we can switch over to the main repo here to get future updates.
+Download the Paninski Lab NeuroPAL software. I suggest putting the code and its dependencies into one folder and adding that entire folder to your MATLAB path.
 https://github.com/amin-nejat/CELL_ID
 
 ## Usage
