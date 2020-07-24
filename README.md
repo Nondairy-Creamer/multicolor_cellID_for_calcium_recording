@@ -44,7 +44,7 @@ Run `create_multicolor_adjustment_file`
 
 Run `adjust_multicolor_image`
 * select the **multicolor_adjustment.mat** file in the multicolor folder
-* generates **neuropal_input.mat**
+* generates **neuropal_data.mat**
 
 In the GUI take the following actions:
 * Crop the image before any other manipulations to increase speed.
@@ -57,7 +57,7 @@ In the GUI take the following actions:
 #### S2b
 Run `visualize_light`
 In the GUI take the following actions
-* Load the **neuropal_input.mat** from the multicolor folder into the NeuroPAL software
+* Load the **neuropal_data.mat** from the multicolor folder into the NeuroPAL software
 * Remove any artifacts not removed in Step 2a
 * Auto-Detect
 * Auto-ID All

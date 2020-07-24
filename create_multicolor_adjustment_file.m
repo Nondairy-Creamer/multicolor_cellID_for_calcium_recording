@@ -26,6 +26,10 @@ function create_multicolor_adjustment_file()
         end
     end
     
+    if any(channel_ind == 0)
+        error('Could not find one of the channels required for multicolor imaging');
+    end
+    
     % convert channels from 0 to 1 indexing
     data = data(:, :, :, channel_ind);
 
