@@ -2,7 +2,7 @@
 NeuroPAL worms use 3 fluorophores and a panneuronal marker to enable cell segmentation and identification. They also allow for a calcium indicator for recording cell activity. This repo combines the information from the multicolor recording to assign cell identities to the neurons in the calcium recording.
 
 ## Setup
-All code is in MATLAB, and has been tested in 2019b and 2020a
+All code is in MATLAB and has been tested in 2019b and 2020a
 
 Download this repo and add it to your MATLAB path
 

@@ -17,5 +17,5 @@ function config = get_config()
     config.calcium_scale = [0.42, 0.42, 50/33]';
     
     % channel of CyOFP in a multicolor_recording
-    config.CyOFP_channel = 4;
+    config.channels_to_use = {'BFP', 'GFP', 'CyOFP', 'mCherry', 'mNeptune'}';
 end
