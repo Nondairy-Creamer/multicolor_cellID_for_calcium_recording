@@ -110,7 +110,7 @@ function create_calcium_reference()
     % without cell IDs. If all the channels are equal the cell ID software
     % fails
     save_path = fullfile(data_folder, 'calcium_data_average_stack.mat');
-
+    
     noise = randn(volume_size(1), volume_size(2), volume_size(3), 5)*10;
     noise(:, :, :, 4) = 0;
     volume_with_noise = reference_average + noise;
@@ -124,5 +124,8 @@ function create_calcium_reference()
 
     % remove the old neuropal file so that neuropal doesn't load it
     old_file_path = fullfile(data_folder, 'calcium_data_average_stack_ID.mat');
-    delete(old_file_path);
+    
+    if exist(old_file_path, 'file')
+        delete(old_file_path);
+    end
 end
