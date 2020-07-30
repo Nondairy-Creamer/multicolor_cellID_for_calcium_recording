@@ -1,4 +1,4 @@
-function align_multicolor_to_calcium_imaging()
+function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figures)
     % align_multicolor_to_calcium_imaging  combines cell location and
     % identification data from a multicolor image analyzed with the
     % NeuroPAL software and links the cell IDs to neurons tracked with the
@@ -8,20 +8,29 @@ function align_multicolor_to_calcium_imaging()
     % I'll use labels to refer to the cell names (like AVA) identified 
     % with the NeuroPAL software
     
+    if nargin < 1
+        calcium_folder = [];
+    end
+    
+    if nargin < 2
+        % plot some figures showing assignments from calcium to multicolor
+        % image
+        plot_alignment_figures = true;
+    end
+    
     %% parameters
     config = get_config();
     
     % stack to align calcium data to
     calcium_index = config.volumes_to_grab(1);
     
-    % the neuroPAL_alignment can plot some figures showing assignments
-    plot_alignment_figures = true;
-
     assignment_algorithm = 'nearest';
 %     assignment_algorithm = 'hungarian';
     
     %% select brainscanner folder
-    calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    if isempty(calcium_folder)
+        calcium_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    end
     multicolor_search = dir(fullfile(calcium_folder, 'multicolor*'));
     multicolor_folder = fullfile(multicolor_search.folder, multicolor_search.name);
 

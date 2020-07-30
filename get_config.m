@@ -18,4 +18,8 @@ function config = get_config()
     
     % channel of CyOFP in a multicolor_recording
     config.channels_to_use = {'BFP', 'GFP', 'CyOFP', 'mCherry', 'mNeptune'}';
+    
+    % If the user tries to make more files than this number they'll get a
+    % confirmation dialogue block
+    config.num_files_check = 5;
 end
