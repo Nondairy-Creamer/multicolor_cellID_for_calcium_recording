@@ -1,0 +1,69 @@
+function update_assignment_labels()
+    data_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    
+    if all(data_folder == 0)
+        return;
+    end
+    
+    full_assignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment.mat');
+    trimmed_assignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment_trimmed.mat');
+    
+    if exist(full_assignment_path, 'file')
+        update_assignments(data_folder, false);
+    end
+    
+    if exist(trimmed_assignment_path, 'file')
+        update_assignments(data_folder, true);
+    end
+end
+
+function update_assignments(data_folder, is_trimmed)
+    if is_trimmed
+        file_append = '_trimmed';
+    else
+        file_append = '';
+    end
+     
+    assignment_path = fullfile(data_folder, ['calcium_to_multicolor_alignment' file_append '.mat']);
+    multicolor_search = dir(fullfile(data_folder, 'multicolor*'));
+    multicolor_search = multicolor_search(1); % take only the first result. Can't handle multiple multicolor folders in one file
+    cell_id_path = fullfile(multicolor_search.folder, multicolor_search.name, ['neuropal_data' file_append '_ID.mat']);
+    
+    previous_assignment = load(assignment_path);
+    [~, human_labels, auto_labels, user_labeled, auto_confidence] = read_cell_locations(cell_id_path);
+    
+    % make sure these are the same same size
+    num_labels = length(previous_assignment.labels.multicolor_human_labels);
+    num_multicolor_neurons = length(human_labels);
+    
+    if num_labels ~= num_multicolor_neurons
+        error('number of neurons in the neuropal data and number of neurons in your assignment file are not equal. Run align_multicolor_to_calcium_imaging or align_tracked_multicolor_to_calcium_imaging.');
+    end
+    
+    output_assignment = previous_assignment;
+    output_assignment.labels.multicolor_human_labels = human_labels;
+    output_assignment.labels.multicolor_auto_labels = auto_labels;
+    output_assignment.labels.user_labeled = user_labeled;
+    output_assignment.labels.auto_confidence = auto_confidence;
+    
+    for nn = 1:length(output_assignment.labels.tracked_human_labels)
+        output_assignment.labels.tracked_human_labels{nn} = 
+        
+        if output_assignment.assignments.tracked_to_multicolor_assignments(cc) ~= 0
+            output_assignment.assignments.tracked_human_labels{cc} = human_labels{output_assignment.assignments.tracked_to_multicolor_assignments(cc)};
+            output_assignment.assignments.tracked_auto_labels{cc} = auton_labels{output_assignment.assignments.tracked_to_multicolor_assignments(cc)};
+            tracked_auto_labels{cc} = multicolor_auto_labels{tracked_to_multicolor_assignments(cc)};
+        else
+            tracked_human_labels{cc} = '';
+            tracked_auto_labels{cc} = '';
+        end
+    end
+    calcium_to_multicolor_assignments = previous_alignment.assignments.calcium_to_multicolor_assignments;
+    tracked_to_multicolor_assignments = previous_alignment.assignments.tracked_to_multicolor_assignments;
+    tracked_to_multicolor_assignments_user_adjusted = previous_alignment.assignments.tracked_to_multicolor_assignments_user_adjusted;
+    user_assigned_cells = previous_alignment.assignments.user_assigned_cells;
+    tracked_cell_locations = previous_alignment.locations.tracked_cell_locations;
+    rotation = previous_alignment.assignments.rotation;
+    flipX = previous_alignment.assignments.flipX;
+    flipY = previous_alignment.assignments.flipY;
+end

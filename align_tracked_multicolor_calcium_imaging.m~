@@ -1,8 +1,19 @@
-function remove_untracked_neurons()
+function align_tracked_multicolor_calcium_imaging()
 %     data_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+%     
+%     if all(data_folder == 0)
+%         return;
+%     end
     
     data_folder = '/home/mcreamer/Documents/data_sets/panneuronal/BrainScanner20200130_145049';
     
+    %% update the neuropal_data file with all the cells
+    
+    
+    %% align the neuropal_data file to the calcium image
+    align_multicolor_to_calcium_imaging(data_folder, false);
+    
+    %% make neuropal_data_trimmed with only tracked cells marked
     alignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment.mat');
     alignment = load(alignment_path);
     
@@ -33,7 +44,7 @@ function remove_untracked_neurons()
     
     new_multicolor_ids = cumsum(multicolor_cell_is_tracked);
     new_multicolor_ids(~multicolor_cell_is_tracked) = 0;
-        
+    
     % update assignment IDs
     for nn = 1:num_tracked_cells
         if alignment.assignments.tracked_to_multicolor_assignments(nn) ~= 0
@@ -51,6 +62,14 @@ function remove_untracked_neurons()
         end
     end
     
-    save(alignment_path, '-struct', 'alignment');
-    save(multicolor_cell_locations_path, '-struct', 'multicolor_cell_locations');
+    %% save the files
+    % copy over the existing neuropal data images
+    orig_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data.mat');
+    copy_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_trimmed.mat');
+    copyfile(orig_path, copy_path);
+    
+    alignment_save_path = fullfile(data_folder, 'calcium_to_multicolor_alignment_trimmed.mat');
+    cell_id_save_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_trimmed_ID.mat');
+    save(alignment_save_path, '-struct', 'alignment');
+    save(cell_id_save_path, '-struct', 'multicolor_cell_locations');
 end
