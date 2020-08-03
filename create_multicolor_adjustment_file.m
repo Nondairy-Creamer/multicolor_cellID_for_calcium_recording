@@ -5,10 +5,7 @@ function create_multicolor_adjustment_file()
     
     config = get_config();
     
-    npy_matlab_folder = '/home/mcreamer/Documents/MATLAB/npy-matlab';
-    addpath(genpath(npy_matlab_folder));
-    
-    data_folder_in = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the multicolor folder');
+    data_folder_in = uigetdir(config.multicolor_path, 'Select the multicolor folder');
 
     if all(data_folder_in == 0)
         return;
@@ -35,7 +32,6 @@ function create_multicolor_adjustment_file()
         data = permute(data, [2, 1, 3, 4]);
 
         % find the channels needed for the multicolor image
-        config = get_config();
         channels_to_use = config.channels_to_use;
         channel_order = readmatrix(fullfile(data_folder, 'moleculesSequence.txt'), 'OutputType', 'char', 'Delimiter', ',');    
         channel_ind = zeros(length(channels_to_use), 1);

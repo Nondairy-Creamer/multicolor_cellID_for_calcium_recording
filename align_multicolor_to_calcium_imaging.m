@@ -22,7 +22,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     config = get_config();
     
     % stack to align calcium data to
-    calcium_index = config.volumes_to_grab(1);
+    calcium_index = config.volumes_to_grab{1};
     
     assignment_algorithm = 'nearest';
 %     assignment_algorithm = 'hungarian';

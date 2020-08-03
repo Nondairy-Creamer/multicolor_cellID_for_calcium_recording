@@ -1,6 +1,6 @@
 function default_struct = get_default_adjustment_file(data)
     config = get_config();
-    scale = config.calcium_scale; % microns
+    scale = cell2mat(config.calcium_scale)'; % microns
     dicChannel = 2;
     
     original_data = data;

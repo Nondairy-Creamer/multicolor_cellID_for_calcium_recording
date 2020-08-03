@@ -7,11 +7,11 @@ function create_calcium_reference()
     
     % number of frames per stack in calcium recording are not constant. To
     % put it in a matrix choose which frames to keep
-    frames_to_keep_initial = config.frames_to_keep_initial;
+    frames_to_keep_initial = config.frames_to_keep_initial{1}:config.frames_to_keep_initial{2};
     
     % choose which volumes to average over. Usually good to average around
     % 2s and start 100 volumes in to avoid issues at the beginning
-    volumes_to_grab = config.volumes_to_grab;
+    volumes_to_grab = config.volumes_to_grab{1}:config.volumes_to_grab{2};
     
     % the camera pixel values have a constant offset from 0
     cmos_background_value = config.cmos_background_value;
@@ -29,7 +29,7 @@ function create_calcium_reference()
     plot_volume_after_flipping = false;
     
     %% Get the data directory
-    data_folder_in = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    data_folder_in = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
     
     if all(data_folder_in == 0)
         return;
