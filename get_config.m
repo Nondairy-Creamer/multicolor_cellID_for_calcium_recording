@@ -5,11 +5,11 @@ function config = get_config()
     update_path = 'sys_config.yaml';
     if exist(update_path, 'file')
         config_new = ReadYaml(update_path);
-    end
+        
+        new_fieldnames = fieldnames(config_new);
 
-    new_fieldnames = fieldnames(config_new);
-
-    for nn = 1:length(new_fieldnames)
-        config.(new_fieldnames{nn}) = config_new.(new_fieldnames{nn});
+        for nn = 1:length(new_fieldnames)
+            config.(new_fieldnames{nn}) = config_new.(new_fieldnames{nn});
+        end
     end
 end
