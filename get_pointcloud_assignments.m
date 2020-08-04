@@ -1,4 +1,4 @@
-function [multicolor_assignments, tracked_assignments, adjusted_rotated] = get_pointcloud_assignments(fixed_points, adjusted_points, tracked_points, assignment_algorithm, distance_threshold)
+function [multicolor_assignments, tracked_assignments] = get_pointcloud_assignments(fixed_points, adjusted_points, tracked_points, assignment_algorithm, distance_threshold)
     % _r means it was registered with cpd rigid
     % _nr means it was registered with cpd nonrigid
     % _o means outliers were removed
@@ -18,7 +18,6 @@ function [multicolor_assignments, tracked_assignments, adjusted_rotated] = get_p
     
     [~, adjusted_cloud_r] = pcregistercpd(adjusted_cloud, fixed_cloud, 'Transform', 'Rigid');
 
-    adjusted_rotated = adjusted_cloud_r.Location;
 %     [~, adjusted_cloud_r_nr] = pcregistercpd(adjusted_cloud_r, fixed_cloud, 'Transform', 'NonRigid');
     adjusted_cloud_r_nr = adjusted_cloud_r;
     
