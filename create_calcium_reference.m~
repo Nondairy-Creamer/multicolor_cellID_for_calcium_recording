@@ -147,10 +147,8 @@ function create_calcium_reference()
             if exist(old_file_path, 'file')
                 delete(old_file_path);
             end
-            
         catch err
-            disp(err);
-            warning(['error in folder ' calcium_folders(ff).folder ' ignoring and trying next folder']);
+            warn('error on file
         end
     end
 end
