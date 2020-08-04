@@ -6,7 +6,7 @@ function align_tracked_multicolor_calcium_imaging()
     end
     
     %% align the neuropal_data file to the calcium image
-    align_multicolor_to_calcium_imaging(data_folder, false);
+    align_multicolor_to_calcium_imaging(data_folder, true);
     
     %% make neuropal_data_trimmed with only tracked cells marked
     alignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment.mat');
