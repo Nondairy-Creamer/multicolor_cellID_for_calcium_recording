@@ -57,6 +57,7 @@ Run `adjust_multicolor_image`
 
 In the GUI take the following actions:
 * Crop the image before any other manipulations to increase speed.
+* Attempt to crop so that the same neurons are visible in the multicolor worm as in the calcium reference. This will significantly improve assignment to the calcium recording.
 * Avoid using the roll worm dial unless necessary as it requires interpolation and slows the program
 * Standard orientation is to have the worm lying on its right side facing the left
 * Adjust the gamma of the green channel if necessary

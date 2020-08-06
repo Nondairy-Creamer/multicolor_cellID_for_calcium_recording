@@ -18,6 +18,10 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
         plot_alignment_figures = true;
     end
     
+    % i wrote this to adjust for the fact that different light paths might
+    % have different sized images.
+    % I tested this on two datasets and it didn't change the assignment
+    % accuracy
     normalize_by_distance = false;
     
     %% parameters
