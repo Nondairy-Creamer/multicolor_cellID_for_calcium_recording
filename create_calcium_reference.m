@@ -60,8 +60,9 @@ function create_calcium_reference()
                 [~, initial_volumes, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep_initial);
             end
 
-            % find the first frame that isn't flipped
-            norm_mod = double(z_loc(1, 1) > z_loc(end, 2));
+            % find the whether the first from goes top to bottom or the
+            % reverse
+            norm_mod = double(z_loc(1, 1) > z_loc(end, 1));
 
             % calculate the average of the non flipped volumes
             norm_vol_ind = 2 - norm_mod;
