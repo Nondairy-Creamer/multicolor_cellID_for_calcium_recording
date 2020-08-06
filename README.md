@@ -43,7 +43,6 @@ In the GUI take the following actions
 * Preprocessing > Artifact Removal > Manual
 * Draw a region around any autofluorescence in the gut and any other oddities
 * Auto-Detect
-* Auto-ID All. The IDs are random, but the software won't save cell locations without IDs
 
 ### Step 2 - Initialize Multicolor Data
 #### S2a
@@ -70,7 +69,6 @@ In the GUI take the following actions
 * Load the **neuropal_data.mat** from the multicolor folder into the NeuroPAL software
 * Remove any artifacts not removed in Step 2a
 * Auto-Detect
-* Auto-ID All
 
 ### Step 3 - Align the Multicolor Labels with the Calcium Recording
 Run `align_tracked_multicolor_imaging`
@@ -98,6 +96,8 @@ Load **neuropal_data.mat**
 Load **neuropal_data_trimmed.mat**
 
 #### Cell ID
+In the GUI take the following actions
+* Auto-ID All
 Select each neuron and try to identify it using the manuals here: https://www.hobertlab.org/neuropal/
 * The example data for OH15262 can be found on tigressdata at /projects/LEIFER/neuropal_example_data
 * Note that there are separate manuals for NeuroPAL w and w/o GCaMP (OH15500 and OH15262)

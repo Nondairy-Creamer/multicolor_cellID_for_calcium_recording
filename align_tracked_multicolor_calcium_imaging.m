@@ -1,5 +1,7 @@
 function align_tracked_multicolor_calcium_imaging()
-    data_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    config = get_config();
+    
+    data_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
     
     if all(data_folder == 0)
         return;

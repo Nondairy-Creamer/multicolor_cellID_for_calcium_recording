@@ -14,6 +14,8 @@ function [cell_locations, human_labels, auto_labels, user_labeled, auto_confiden
         human_labels{cc} = this_cell.annotation;
         auto_labels{cc} = this_cell.deterministic_id;
         user_labeled(cc) = this_cell.annotation_confidence == 1;
-        auto_confidence(cc) = this_cell.probabilistic_probs(1);
+        if ~isempty(this_cell.probabilistic_probs)
+            auto_confidence(cc) = this_cell.probabilistic_probs(1);
+        end
     end
 end

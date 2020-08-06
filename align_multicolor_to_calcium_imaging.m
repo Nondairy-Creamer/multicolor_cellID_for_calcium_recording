@@ -18,6 +18,8 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
         plot_alignment_figures = true;
     end
     
+    normalize_by_distance = false;
+    
     %% parameters
     config = get_config();
     
@@ -60,13 +62,26 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     multicolor_cell_locations_meansub = multicolor_cell_locations - mean(multicolor_cell_locations);
     [~, multicolor_cell_locations_proj] = pca(multicolor_cell_locations_meansub);
     
-    % decide whether to flip any dims
-    calcium_fract_above_zero = mean(calcium_cell_locations_proj > 0);
-    calcium_flip_this_dim = 2*(calcium_fract_above_zero >= 0.5) - 1;
+    if normalize_by_distance
+        % normalize to mean minimum distance to another cell
+        calcium_dist_to_cells = squeeze(sqrt(sum((calcium_cell_locations_proj - permute(calcium_cell_locations_proj, [3, 2, 1])).^2, 2)));
+        calcium_dist_to_cells(logical(eye(size(calcium_dist_to_cells, 1)))) = nan;
+        calcium_min_dist_to_cells = nanmin(calcium_dist_to_cells, [], 2);
+        calcium_cell_locations_proj = calcium_cell_locations_proj ./ mean(calcium_min_dist_to_cells);
+
+        multicolor_dist_to_cells = squeeze(sqrt(sum((multicolor_cell_locations_proj - permute(multicolor_cell_locations_proj, [3, 2, 1])).^2, 2)));
+        multicolor_dist_to_cells(logical(eye(size(multicolor_dist_to_cells, 1)))) = nan;
+        multicolor_min_dist_to_cells = nanmin(multicolor_dist_to_cells, [], 2);
+        multicolor_cell_locations_proj = multicolor_cell_locations_proj ./ mean(multicolor_min_dist_to_cells);
+    end
+    
+    % calculate skew of the locations and align using that
+    calcium_skew = mean(calcium_cell_locations_proj.^3);
+    calcium_flip_this_dim = 2*(calcium_skew >= 0) - 1;
     calcium_cell_locations_proj = calcium_cell_locations_proj .* calcium_flip_this_dim;
 
-    multicolor_fract_above_zero = mean(multicolor_cell_locations_proj > 0);
-    multicolor_flip_this_dim = 2*(multicolor_fract_above_zero >= 0.5) - 1;
+    multicolor_skew = mean(multicolor_cell_locations_proj.^3);
+    multicolor_flip_this_dim = 2*(multicolor_skew >= 0) - 1;
     multicolor_cell_locations_proj = multicolor_cell_locations_proj .* multicolor_flip_this_dim;
     
     %% get tracked cell body locations
@@ -111,6 +126,10 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     tracked_cell_locations_meansub = tracked_cell_locations - calcium_cell_location_mean;
     tracked_cell_locations_proj = tracked_cell_locations_meansub * calcium_cell_locations_pc;
     tracked_cell_locations_proj = tracked_cell_locations_proj .* calcium_flip_this_dim;
+    
+    if normalize_by_distance
+        tracked_cell_locations_proj = tracked_cell_locations_proj ./ mean(calcium_min_dist_to_cells);
+    end 
     
     %% align multicolor and calcium imaging
     [calcium_to_multicolor_assignments, tracked_to_multicolor_assignments] = get_pointcloud_assignments(calcium_cell_locations_proj, multicolor_cell_locations_proj, tracked_cell_locations_proj, assignment_algorithm);

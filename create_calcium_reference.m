@@ -119,25 +119,20 @@ function create_calcium_reference()
                 colormap(gray);
             end
 
-            %% average volumes together
+            % average volumes together
             reference_average = mean(reference_volumes, 4);
 
-            volume_size = size(reference_average);
-
             %% Convert to neuropal format
-            % neuropal software requires a 5d matrix. We need the color channels to
-            % be noise because the software won't write out cell body location
-            % without cell IDs. If all the channels are equal the cell ID software
-            % fails
             save_path = fullfile(data_folder, 'calcium_data_average_stack.mat');
 
-            noise = randn(volume_size(1), volume_size(2), volume_size(3), 5)*10;
-            noise(:, :, :, 4) = 0;
-            volume_with_noise = reference_average + noise;
-
-            volume_with_noise = uint16(volume_with_noise - cmos_background_value);
-
-            neuropal_input = get_default_neuropal_input(volume_with_noise, save_path);
+            volume_backsub = uint16(reference_average - cmos_background_value);
+            
+            % neuropal software requires a 4d matrix with the 4th dimension
+            % representing the different color channels
+            % just duplicate the tagRFP data
+            volume_backsub = repmat(volume_backsub, [1, 1, 1, 5]);
+            
+            neuropal_input = get_default_neuropal_input(volume_backsub, save_path);
 
             %% save the volume
             save(save_path, '-struct', 'neuropal_input');
