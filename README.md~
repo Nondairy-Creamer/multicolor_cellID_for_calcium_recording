@@ -81,7 +81,7 @@ The second two output files contain data for only the multicolor cells that were
 * Generates **neuropal_data_trimmed.mat**
 * Generates **calcium_to_multicolor_alignment_trimmed.mat**
 
-#### Optional but recommended (default accuracy ~85%)
+#### Optional but recommended (
 Run `check_cell_assignment` to check the assignments between multicolor and calcium imaging.
 * Displays neurons that were tracked by the calcium recording segmentation software on the left
 * Displays neurons segmented in the multicolor worm on the right
