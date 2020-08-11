@@ -4,3 +4,5 @@ sys_config.yaml
 .NeuroPAL_ID_prefs.mat
 
 *.m~
+
+*.md~
