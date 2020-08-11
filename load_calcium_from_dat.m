@@ -1,15 +1,12 @@
-function [red, green, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep)
+function [red, green, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, num_slices)
     % load_calcium_from_dat  will get all the volumes_to_grab volumes from a
     % calcium recording. All of this code was ripped from the 3dbrain
     % pipeline https://github.com/leiferlab/3dbrain
-
+    
     if nargin < 3
         num_slices = [];
-        frames_to_keep = [];
-    else
-        num_slices = length(frames_to_keep);
     end
-
+    
     num_stacks = length(volumes_to_grab);
     
     % get the information from the high resolution microscope recording
@@ -88,9 +85,17 @@ function [red, green, z_loc] = load_calcium_from_dat(data_folder, volumes_to_gra
             green{ii}=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),:);
             z_loc{ii} = hiResData.Z(hiResIdx);
         else
+            z_loc_init = hiResData.Z(hiResIdx);
+            
+            if z_loc_init(1) > z_loc_init(end)
+                frames_to_keep = 1 : num_slices;
+            else
+                frames_to_keep = (size(hiResImage, 3) - num_slices + 1) : size(hiResImage, 3);
+            end
+            
             red(:, :, :, ii)=hiResImage((rect1(2)+1):rect1(4),(1+rect1(1)):rect1(3),frames_to_keep);
             green(:, :, :, ii)=hiResImage((rect1(4)+1):end,(1+rect1(1)):rect1(3),frames_to_keep);
-            z_loc(:, ii) = hiResData.Z(hiResIdx(frames_to_keep));
+            z_loc(:, ii) = z_loc_init(frames_to_keep);
         end
     end
     

@@ -48,6 +48,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     %% read cell body locations
     calcium_cell_locations = read_cell_locations(fullfile(calcium_folder, 'calcium_data_average_stack_ID.mat'));
     calcium_data = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
+    shift_val = calcium_data.shift_val;
     calcium_scale = calcium_data.info.scale;
     calcium_cell_locations = calcium_cell_locations .* calcium_scale';
     calcium_cell_locations = calcium_cell_locations(:, [2, 1, 3]);
@@ -121,6 +122,12 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
         t_loc = t_loc + 1;
     end
 
+    % when we flip the image we trim off images in the z stack. adjust the
+    % z position here so are cells are not offset.
+    if shift_val > 0
+        tracked_cell_locations(:, 3) = tracked_cell_locations(:, 3) - shift_val;
+    end
+    
     % scale calcium data into microns
     tracked_cell_locations = tracked_cell_locations .* calcium_scale';
     

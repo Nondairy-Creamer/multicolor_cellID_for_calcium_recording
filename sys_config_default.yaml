@@ -1,6 +1,6 @@
-# number of frames per stack in calcium recording are not constant. To
-# put it in a matrix choose which frames to keep
-frames_to_keep_initial: [1, 32]
+# number of frames per stack in calcium recording are not constant
+# choose how many frames to keep and average over
+num_frames_to_keep: 32
 
 # choose which volumes to average over. Usually good to average around
 # 2s and start 100 volumes in to avoid issues at the beginning

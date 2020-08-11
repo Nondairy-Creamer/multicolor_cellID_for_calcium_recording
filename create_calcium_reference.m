@@ -7,7 +7,7 @@ function create_calcium_reference()
     
     % number of frames per stack in calcium recording are not constant. To
     % put it in a matrix choose which frames to keep
-    frames_to_keep_initial = config.frames_to_keep_initial{1}:config.frames_to_keep_initial{2};
+    num_frames_to_keep = config.num_frames_to_keep;
     
     % choose which volumes to average over. Usually good to average around
     % 2s and start 100 volumes in to avoid issues at the beginning
@@ -55,9 +55,9 @@ function create_calcium_reference()
 
             % get volumes
             if use_red_reference
-                [initial_volumes, ~, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep_initial);
+                [initial_volumes, ~, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, num_frames_to_keep);
             else
-                [~, initial_volumes, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, frames_to_keep_initial);
+                [~, initial_volumes, z_loc] = load_calcium_from_dat(data_folder, volumes_to_grab, num_frames_to_keep);
             end
 
             % find the whether the first from goes top to bottom or the
@@ -66,14 +66,14 @@ function create_calcium_reference()
 
             % calculate the average of the non flipped volumes
             norm_vol_ind = 2 - norm_mod;
-            norm_vol = mean(initial_volumes(:, :, frames_to_keep_initial, norm_vol_ind:2:end), 4);
+            norm_vol = mean(initial_volumes(:, :, :, norm_vol_ind:2:end), 4);
             % calculate the std over z for the volume that isn't flipped
             norm_std = permute(std(norm_vol, [], [1, 2]), [3, 1, 2]);
             norm_std = norm_std - norm_std(1);
 
             % calculate the average of the flipped volumes
             flip_vol_ind = norm_mod + 1;
-            flip_vol = mean(initial_volumes(:, :, frames_to_keep_initial, flip_vol_ind:2:end), 4);
+            flip_vol = mean(initial_volumes(:, :, :, flip_vol_ind:2:end), 4);
             % calculate the std over z for the volume that is flipped
             flip_std = permute(std(flip_vol, [], [1, 2]), [3, 1, 2]);
             flip_std = flip_std - flip_std(1);
@@ -133,7 +133,9 @@ function create_calcium_reference()
             volume_backsub = repmat(volume_backsub, [1, 1, 1, 5]);
             
             neuropal_input = get_default_neuropal_input(volume_backsub, save_path);
-
+            neuropal_input.shift_val = shift_val;
+            
+            
             %% save the volume
             save(save_path, '-struct', 'neuropal_input');
 
