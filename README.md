@@ -26,12 +26,12 @@ Move the multicolor imaging folder in the calcium imaging brainscanner folder
 * Only necessary if you are trying to label calcium data using multicolor data
 
 ### Step 1 - Make a Calcium Reference Image
-#### S1a
+#### S1a - Extract calcium traces
 Extract calcium traces in individual neurons
 using the 3dbrain pipeline
 https://github.com/leiferlab/3dbrain
 
-#### S1b
+#### S1b - Extract cell body locations of calcium image
 Run `create_calcium_reference`
 * Select the brainscanner folder or a folder containing brainscanner folders
 * Will recursively search through the selected directory and create a calcium reference for each brainscanner folder it finds
@@ -45,7 +45,7 @@ In the GUI take the following actions
 * Auto-Detect
 
 ### Step 2 - Initialize Multicolor Data
-#### S2a
+#### S2a - Create neuropal input from multicolor data
 Run `create_multicolor_adjustment_file`
 * Select the multicolor folder or a folder containing multicolor folders
 * Will recursively search through the selected directory and create a multicolor adjustment file fore each
@@ -64,29 +64,33 @@ In the GUI take the following actions:
 * Remove outliers tool will set everything inside the region to 0
 * See **README_adjust_multicolor_image.md** for more info
 
-#### S2b
+#### S2b - Find cell body locations of the multicolor image
 Run `visualize_light`
 In the GUI take the following actions
 * Load the **neuropal_data.mat** from the multicolor folder into the NeuroPAL software
-* Remove any artifacts not removed in Step 2a
 * Auto-Detect
 
 ### Step 3 - Align the Multicolor Labels with the Calcium Recording
-Run `align_tracked_multicolor_imaging`
+#### S3a - Perform alignment
+Run `align__multicolor_imaging`
 The first two output files contain data for all the cell bodies found in the multicolor and calcium images
 * Generates **neuropal_data.mat**
 * Generates **calcium_to_multicolor_alignment**
 
-The second two output files contain data for only the multicolor cells that were assigned to neurons tracked by the calcium segmentation software. If you only care about labeling cells for calcium data using these files will save you time.
-* Generates **neuropal_data_trimmed.mat**
-* Generates **calcium_to_multicolor_alignment_trimmed.mat**
+#### S3b - Validate assignments
+Note: This optional but recommended (default accuracy ~85%)
 
-#### Optional but recommended (default accuracy ~85%)
-Run `check_cell_assignment` to check the assignments between multicolor and calcium imaging.
+Run `check_cell_assignment`
 * Displays neurons that were tracked by the calcium recording segmentation software on the left
 * Displays neurons segmented in the multicolor worm on the right
 * Clicking on a neuron in the calcium image will highlight the neuron it is assigned to in the multicolor Recording
 * Clicking on the neuron in the multicolor recording will assign it to the currently highlighted neuron in the calcium recording
+
+#### S3c - Remove multicolor cells that were not tracked in calcium Recording
+Note: This is optional but recommended. If you only care about labeling cells for calcium data using these files will save you time.
+
+Run `create_trimmed_multicolor`
+* Generates **neuropal_data_trimmed.mat**
 
 ### Step 4 - ID Neurons
 Run `visualize_light`

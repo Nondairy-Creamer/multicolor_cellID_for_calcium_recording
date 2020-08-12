@@ -1,64 +1,62 @@
 function update_assignment_labels()
-    data_folder = uigetdir('/projects/LEIFER/PanNeuronal/', 'Select the brainscanner folder');
+    config = get_config();
+
+    data_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
     
     if all(data_folder == 0)
         return;
     end
     
-    full_assignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment.mat');
-    trimmed_assignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment_trimmed.mat');
-    
-    %% check if either type of assignment file exists
-    % then update them with the most recent multicolor data
-    if exist(full_assignment_path, 'file')
-        update_assignments(data_folder, false);
-    end
-    
-    if exist(trimmed_assignment_path, 'file')
-        update_assignments(data_folder, true);
-    end
-end
-
-function update_assignments(data_folder, is_trimmed)
-    if is_trimmed
-        file_append = '_trimmed';
-    else
-        file_append = '';
-    end
-    
     % load in the assignment and multicolor data
-    assignment_path = fullfile(data_folder, ['calcium_to_multicolor_alignment' file_append '.mat']);
+    assignment_path = fullfile(data_folder, 'calcium_to_multicolor_alignment.mat');
     multicolor_search = dir(fullfile(data_folder, 'multicolor*'));
-    multicolor_search = multicolor_search(1); % take only the first result. Can't handle multiple multicolor folders in one file
-    cell_id_path = fullfile(multicolor_search.folder, multicolor_search.name, ['neuropal_data' file_append '_ID.mat']);
+    multicolor_folder = fullfile(multicolor_search(1).folder, multicolor_search(1).name); % take only the first result. Can't handle multiple multicolor folders in one file
+
+    trimmed_neuropal_path = fullfile(multicolor_folder, 'neuropal_data_trimmed.mat');
     
+    % if the trimmed file exists, use that
+    if exist(trimmed_neuropal_path, 'file')
+        is_trimmed = true;
+        cell_id_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_trimmed_ID.mat');
+
+    else
+        is_trimmed = false;
+        cell_id_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_ID.mat');
+    end
+    
+    % load in the assignment
     previous_assignment = load(assignment_path);
     [~, human_labels, auto_labels, user_labeled, auto_confidence] = read_cell_locations(cell_id_path);
     
-    % make sure the assignment data and multicolor data are from the same
-    % dataset. Doesn't cover all bases, but check that they have the same
-    % number of neurons
-    num_labels = length(previous_assignment.labels.multicolor_human_labels);
-    num_multicolor_neurons = length(human_labels);
-    
-    if num_labels ~= num_multicolor_neurons
-        error('number of neurons in the neuropal data and number of neurons in your assignment file are not equal. Run align_multicolor_to_calcium_imaging or align_tracked_multicolor_to_calcium_imaging.');
-    end
-    
     % update the assignment file and save it
     output_assignment = previous_assignment;
+        
+    if is_trimmed
+        % only assigned neurons were included in the trimmed multicolor
+        % therefore the ID in the trimmed multicolor is the order ranking
+        % of the original ID. Add 0 to ensure its included
+        [~, ~, ranking] = unique([0; previous_assignment.assignments.tracked_to_multicolor_assignments_user_adjusted]);
+        
+        % subtract 1 so that 0 gets 0 rank and get rid of that first entry
+        % where we added the zero
+        tracked_to_multicolor_assignments = ranking(2:end) - 1;
+    else
+        tracked_to_multicolor_assignments = previous_assignment.assignments.tracked_to_multicolor_assignments_user_adjusted;
+    end
+    
+    % update all the cell id labels
     output_assignment.labels.multicolor_human_labels = human_labels;
     output_assignment.labels.multicolor_auto_labels = auto_labels;
     output_assignment.labels.user_labeled = user_labeled;
     output_assignment.labels.auto_confidence = auto_confidence;
-    
-    for nn = 1:length(output_assignment.labels.tracked_human_labels)
-        if output_assignment.assignments.tracked_to_multicolor_assignments(nn) ~= 0
-            output_assignment.assignments.tracked_human_labels{nn} = human_labels{output_assignment.assignments.tracked_to_multicolor_assignments(nn)};
-            output_assignment.assignments.tracked_auto_labels{nn} = auto_labels{output_assignment.assignments.tracked_to_multicolor_assignments(nn)};
+
+    for nn = 1:length(tracked_to_multicolor_assignments)
+        if tracked_to_multicolor_assignments(nn) ~= 0
+            output_assignment.labels.tracked_human_labels{nn} = human_labels{tracked_to_multicolor_assignments(nn)};
+            output_assignment.labels.tracked_auto_labels{nn} = auto_labels{tracked_to_multicolor_assignments(nn)};
         else
-            output_assignment.assignments.tracked_human_labels{nn} = '';
-            output_assignment.assignments.tracked_auto_labels{nn} = '';
+            output_assignment.labels.tracked_human_labels{nn} = '';
+            output_assignment.labels.tracked_auto_labels{nn} = '';
         end
     end
     
