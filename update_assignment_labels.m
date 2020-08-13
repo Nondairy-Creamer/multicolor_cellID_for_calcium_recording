@@ -40,6 +40,22 @@ function update_assignment_labels()
         % subtract 1 so that 0 gets 0 rank and get rid of that first entry
         % where we added the zero
         tracked_to_multicolor_assignments = ranking(2:end) - 1;
+        
+        % update the untrimmed neuropal_data with any cell_ids assigned to the
+        % trimmed neuropal incase it gets deleted
+        untrimmed_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_ID.mat');
+        trimmed_neuropal = load(cell_id_path);
+        untrimmed_neuropal = load(untrimmed_path);
+        for cc = 1:length(tracked_to_multicolor_assignments)
+            untrimmed_id = previous_assignment.assignments.tracked_to_multicolor_assignments_user_adjusted(cc);
+            trimmed_id = tracked_to_multicolor_assignments(cc);
+            
+            if trimmed_id ~= 0
+                untrimmed_neuropal.neurons.neurons(untrimmed_id) = trimmed_neuropal.neurons.neurons(trimmed_id);
+            end
+        end
+        
+        save(untrimmed_path, '-struct', 'untrimmed_neuropal');
     else
         tracked_to_multicolor_assignments = previous_assignment.assignments.tracked_to_multicolor_assignments_user_adjusted;
     end
