@@ -1,4 +1,4 @@
-function align_tracked_multicolor_calcium_imaging()
+function create_trimmed_multicolor_file()
     config = get_config();
     
     data_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
