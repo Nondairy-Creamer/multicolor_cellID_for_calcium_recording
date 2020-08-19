@@ -120,7 +120,6 @@ Edited by `check_cell_assignment` and `update_assignment_labels`
 
 This is the final output of this pipeline. Contains:
 * assignments: The link between the cell body locations in the multicolor image and the neurons tracked by the calcium extraction software
-* calcium_recording: The neurons x time calcium recording that was aligned to the multicolor image
 * labels: The cell ID labels (AVA, RIM, etc) for the neurons in the calcium recording
 * locations: The cell body locations for both the multicolor image and the calcium recording.
 

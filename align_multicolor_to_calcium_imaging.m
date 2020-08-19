@@ -189,11 +189,6 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     end
     
     %% save the new alignment data
-    % get the associated calcium data
-    calcium_recording = load(fullfile(calcium_folder, 'heatData.mat'));
-    output_struct.calcium_recording.data = calcium_recording.Ratio2;
-    output_struct.calcium_recording.time = calcium_recording.hasPointsTime;
-    
     output_struct.labels.tracked_human_labels = tracked_human_labels;
     output_struct.labels.tracked_auto_labels = tracked_auto_labels;
     output_struct.labels.multicolor_human_labels = multicolor_human_labels;
