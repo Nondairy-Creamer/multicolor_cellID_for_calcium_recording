@@ -22,6 +22,7 @@ https://code.google.com/archive/p/yamlmatlab/
 
 ### Step 0
 Record multicolor and calcium data
+
 Move the multicolor imaging folder in the calcium imaging brainscanner folder
 * Only necessary if you are trying to label calcium data using multicolor data
 
@@ -72,7 +73,7 @@ In the GUI take the following actions
 
 ### Step 3 - Align the Multicolor Labels with the Calcium Recording
 #### S3a - Perform alignment
-Run `align__multicolor_imaging`
+Run `align_multicolor_to_calcium_imaging`
 The first two output files contain data for all the cell bodies found in the multicolor and calcium images
 * Generates **neuropal_data.mat**
 * Generates **calcium_to_multicolor_alignment**
@@ -89,7 +90,7 @@ Run `check_cell_assignment`
 #### S3c - Remove multicolor cells that were not tracked in calcium Recording
 Note: This is optional but recommended. If you only care about labeling cells for calcium data using these files will save you time.
 
-Run `create_trimmed_multicolor`
+Run `create_trimmed_multicolor_file`
 * Generates **neuropal_data_trimmed.mat**
 
 ### Step 4 - ID Neurons
@@ -106,7 +107,8 @@ In the GUI take the following actions
 Select each neuron and try to identify it using the manuals here: https://www.hobertlab.org/neuropal/
 * The example data for OH15262 can be found on tigressdata at /projects/LEIFER/neuropal_example_data
 * Note that there are separate manuals for NeuroPAL w and w/o GCaMP (OH15500 and OH15262)
-* Whenever you finish call `update_assignment_labels` to update **calcium_to_multicolor_alignment.mat**
+
+Whenever you finish call `update_assignment_labels` to update **calcium_to_multicolor_alignment.mat**
 
 ## Documents Glossary
 #### calcium_data_average_stack.mat
