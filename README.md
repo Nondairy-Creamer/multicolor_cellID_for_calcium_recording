@@ -10,7 +10,8 @@ https://github.com/amin-nejat/CELL_ID
 Download this repo and add it to your MATLAB path
 
 Download yamlmatlab and add it to your MATLAB path
-https://code.google.com/archive/p/yamlmatlab/
+* tested version available here: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/yamlmatlab/YAMLMatlab_0.4.3.zip
+* Other versions: https://code.google.com/archive/p/yamlmatlab/downloads
 
 **sys_config_default.yaml** contains the default values for the software. If you want to change any of the values, don't edit this file. Instead **create sys_config.yaml** and any values you add will overwrite those in the default file or create new fields. If you are working on tigressdata the default files should be fine, if you are working from a different computer you can change the default paths to save yourself time looking for the panneurona/multicolor files to load.
 
