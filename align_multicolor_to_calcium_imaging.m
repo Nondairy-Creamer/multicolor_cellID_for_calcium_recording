@@ -189,6 +189,14 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     end
     
     %% save the new alignment data
+    % save the data that we aligned to
+    % the data is small so storing it is not a big deal. This also means
+    % that if you run other analysis on the data you can still use this
+    % alignment data until you overwrite it.
+    heatData = load(fullfile(calcium_folder, 'heatData.mat'));
+    output_struct.calcium_data = heatData;
+    
+    % save the alignment data
     output_struct.labels.tracked_human_labels = tracked_human_labels;
     output_struct.labels.tracked_auto_labels = tracked_auto_labels;
     output_struct.labels.multicolor_human_labels = multicolor_human_labels;
