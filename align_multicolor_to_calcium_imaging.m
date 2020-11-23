@@ -87,6 +87,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
 
     multicolor_skew = mean(multicolor_cell_locations_proj.^3);
     multicolor_flip_this_dim = 2*(multicolor_skew >= 0) - 1;
+    multicolor_flip_this_dim(3) = xor(multicolor_flip_this_dim(1) == 1, multicolor_flip_this_dim(2) == 1)*2 - 1;
     multicolor_cell_locations_proj = multicolor_cell_locations_proj .* multicolor_flip_this_dim;
     
     %% get tracked cell body locations
