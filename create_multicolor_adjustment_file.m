@@ -53,7 +53,7 @@ function create_multicolor_adjustment_file()
             data = data(:, :, :, channel_ind);
 
             % spatially align the data to the panneuronal marker
-            align_color_channels(data);
+            data = align_color_channels(data);
             
             % get z step size
             piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));

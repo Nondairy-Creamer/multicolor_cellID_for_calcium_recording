@@ -19,23 +19,8 @@ function data_out = align_color_channels(data_in)
 
     % find the middle of the image
     std_stack = std(data_double(:, :, :, reference_ind), 0, [1, 2]);
-%     [~, mid_z] = max(std_stack);
-%     
-%     % find the transformation for the mid z frame and then apply that to
-%     % every other frame in z
-%     ref = data_double(:, :, mid_z, reference_ind);
-%     
-%     Rmoving = cell(size(data_double, 4), 1);
-%     tform = cell(size(data_double, 4), 1);
-%     
-%     % find the transform for each channel
-%     for cc = 1:size(data_double, 4)
-%         align = data_double(:, :, mid_z, cc);
-% 
-%         [~, Rmoving{cc}, tform{cc}] = imregister2(align, ref, 'similarity', optimizer, metric);
-%     end
 
-    [std_max, ~] = max(std_stack);
+    std_max = max(std_stack);
     
     zs_with_cells = std_stack > std_max*std_cut_off;
     zs_to_use = 1:size(data_in, 3);
@@ -80,8 +65,6 @@ function data_out = align_color_channels(data_in)
             end
         end
     end
-    
-    data_out = uint16(data_out);
 end
 
 % this function coppied from the image toolbox so it will output the
