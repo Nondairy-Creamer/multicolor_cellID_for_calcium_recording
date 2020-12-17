@@ -110,3 +110,34 @@ function assignment = nearest_neighbor_assignment(fixed_to_adjusted_distance)
         end
     end
 end
+
+function adjusted_out = spring_registration(fixed_in, adjusted_in)
+    % mean subtract and get rid of scale
+    fixed = fixed_in - mean(fixed_in, 1);
+    fixed = fixed ./ std(fixed(:));
+    
+    adjusted = adjusted_in - mean(adjusted_in, 1);
+    adjusted = adjusted ./ std(adjusted(:));
+    
+    
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

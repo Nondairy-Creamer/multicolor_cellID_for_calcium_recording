@@ -15,6 +15,9 @@ calcium_scale: [0.42, 0.42, 1.5152]
 # channel of CyOFP in a multicolor_recording
 channels_to_use: ['BFP', 'GFP', 'CyOFP', 'mCherry', 'mNeptune']
 
+# choose which channel to spatially align the other channels to
+multicolor_refernce_channel: 'mCherry'
+
 # If the user tries to make more files than this number they'll get a
 # confirmation dialogue block
 num_files_check: 5

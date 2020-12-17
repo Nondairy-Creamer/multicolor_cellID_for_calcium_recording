@@ -52,6 +52,9 @@ function create_multicolor_adjustment_file()
             % convert channels from 0 to 1 indexing
             data = data(:, :, :, channel_ind);
 
+            % spatially align the data to the panneuronal marker
+            align_color_channels(data);
+            
             % get z step size
             piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));
             % this file is in fraction of 200 micrometer, convert to micrometers
