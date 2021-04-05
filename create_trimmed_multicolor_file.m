@@ -1,7 +1,9 @@
-function create_trimmed_multicolor_file()
+function create_trimmed_multicolor_file(data_folder)
     config = get_config();
     
-    data_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
+    if nargin < 1
+        data_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
+    end
     
     if all(data_folder == 0)
         return;
