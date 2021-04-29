@@ -42,24 +42,32 @@ function create_multicolor_adjustment_file()
                     channel_ind(cc) = co;
                 end
             end
+            
+            if channel_ind == 0
+                warning(['Could not find one of the channel ' channels_to_use(cc) ', setting that channel to zeros.']);
+            end
         end
 
-        if any(channel_ind == 0)
-            error('Could not find one of the channels required for multicolor imaging');
+        selected_channels = zeros(size(data,1), size(data,2), size(data,3), length(channel_ind));
+        
+        for cc = 1:length(channels_to_use)
+            if channel_ind(cc) ~= 0
+                % convert channels from 0 to 1 indexing
+                selected_channels(:, :, :, cc) = data(:, :, :, channel_ind(cc));
+            else
+                selected_channels(:, :, :, cc) = zeros(size(data(:, :, :, 1)));
+            end
         end
-
-        % convert channels from 0 to 1 indexing
-        data = data(:, :, :, channel_ind);
 
         % spatially align the data to the panneuronal marker
-        data = align_color_channels(data);
+        data_aligned = align_color_channels(selected_channels);
 
         % get z step size
         piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));
         % this file is in fraction of 200 micrometer, convert to micrometers
         p_step = 200*(piezo_position(2) - piezo_position(1));
 
-        default_struct = get_default_adjustment_file(data);
+        default_struct = get_default_adjustment_file(data_aligned);
         default_struct.scale(3) = p_step;
 
         save_path = fullfile(data_folder, 'multicolor_adjustment.mat');
