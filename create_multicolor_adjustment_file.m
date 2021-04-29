@@ -72,6 +72,6 @@ function create_multicolor_adjustment_file()
         default_struct.scale(3) = p_step;
 
         save_path = fullfile(data_folder, 'multicolor_adjustment.mat');
-        save(save_path, '-struct', 'default_struct');
+        save(save_path, '-struct', 'default_struct', '-v7.3');
     end
 end
