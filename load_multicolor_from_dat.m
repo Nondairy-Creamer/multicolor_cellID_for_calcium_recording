@@ -1,12 +1,4 @@
-function stack = load_multicolor_from_dat(data_folder, nX, nY)
-    if nargin < 2
-        nX = 1024;
-    end
-    
-    if nargin < 3
-        nY = 512;
-    end
-
+function stack = load_multicolor_from_dat(data_folder)
     config = get_config();
     cmos_background_value = config.cmos_background_value;
     
@@ -35,8 +27,10 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
         end
     end
     
-    %get image path
-    dat_file_path = fullfile(data_folder, ['frames-' num2str(nY) 'x' num2str(nX) '.dat']);
+    dat_file_path = dir(fullfile(data_folder, '*.dat'));
+    dat_file_path = fullfile(dat_file_path.folder, dat_file_path.name);
+
+    [nY, nX] = get_dat_dimensions(dat_file_path);
     
     %get image size
     bytes_per_pixel = 2;
@@ -57,17 +51,4 @@ function stack = load_multicolor_from_dat(data_folder, nX, nY)
     stack = permute(stack, [1, 2, 4, 3]);
     
     fclose(Fid);
-end
-
-function [rows,cols]=getdatdimensions(string)
-    %getdatdimension takes a string produced by the whole brain imaging system,
-    %which has the image dimensions in the text, and parses the text to extract
-    %the rows and columns. string is in the format sCMOS_Frames_U16_1024x512.dat
-    %  [rows,cols]=getdatdimensions(string)
-
-    xloc= find(string=='x',1,'last');
-    dotloc=find(string=='.',1,'last');
-    numstart= find(string=='_',1,'last');
-    rows=str2double(string(numstart+1:xloc-1));
-    cols=str2double(string(xloc+1:dotloc-1));
 end

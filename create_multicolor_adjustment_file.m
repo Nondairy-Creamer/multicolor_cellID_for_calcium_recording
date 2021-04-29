@@ -27,7 +27,7 @@ function create_multicolor_adjustment_file()
     for ff = 1:num_files
         try
             data_folder = multicolor_folders(ff).folder;
-
+            
             % get multicolor data from .dat file
             data = load_multicolor_from_dat(data_folder);
             data = permute(data, [2, 1, 3, 4]);
