@@ -43,7 +43,7 @@ function create_multicolor_adjustment_file()
                 end
             end
             
-            if channel_ind == 0
+            if channel_ind(cc) == 0
                 warning(['Could not find one of the channel ' channels_to_use(cc) ', setting that channel to zeros.']);
             end
         end
