@@ -55,8 +55,7 @@ function create_multicolor_adjustment_file()
                 % convert channels from 0 to 1 indexing
                 selected_channels(:, :, :, cc) = data(:, :, :, channel_ind(cc));
             else
-%                 selected_channels(:, :, :, cc) = zeros(size(data(:, :, :, 1)));
-                selected_channels(:, :, :, cc) = data(:, :, :, 1);
+                selected_channels(:, :, :, cc) = zeros(size(data(:, :, :, 1)));
             end
         end
 
