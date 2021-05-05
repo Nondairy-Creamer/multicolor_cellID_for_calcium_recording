@@ -71,6 +71,16 @@ function create_multicolor_adjustment_file()
         default_struct.scale(3) = p_step;
 
         save_path = fullfile(data_folder, 'multicolor_adjustment.mat');
-        save(save_path, '-struct', 'default_struct', '-v7.3');
+        
+        % if the variable is small enough, save it as normal. otherwise use
+        % -v7.3 which can save big files but is slow. Assume a 64 bit 
+        struct_h = whos('default_struct');
+        bytes_in_struct = struct_h.bytes;
+        if bytes_in_struct < 2e9
+            save(save_path, '-struct', 'default_struct');
+        else
+            disp('struct > 2 GB, saving in -v7.3');
+            save(save_path, '-struct', 'default_struct', '-v7.3');
+        end
     end
 end

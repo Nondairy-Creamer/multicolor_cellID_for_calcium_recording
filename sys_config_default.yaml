@@ -6,8 +6,9 @@ num_frames_to_keep: 32
 # 2s and start 100 volumes in to avoid issues at the beginning
 volumes_to_grab: [100, 111]
 
-# the camera pixel values have a constant offset from 0
-cmos_background_value: 400
+# the camera pixel values have a constant offset from 0. However this depends on pre filtering
+# in general just set to 0 and do background sub later
+cmos_background_value: 0
 
 # scale of calcium recordings in microns
 calcium_scale: [0.42, 0.42, 1.5152]
