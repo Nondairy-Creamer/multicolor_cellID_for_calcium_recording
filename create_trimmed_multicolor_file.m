@@ -40,5 +40,13 @@ function create_trimmed_multicolor_file(data_folder)
     copyfile(orig_path, copy_path);
     
     cell_id_save_path = fullfile(multicolor_search.folder, multicolor_search.name, 'neuropal_data_trimmed_ID.mat');
-    save(cell_id_save_path, '-struct', 'multicolor_cell_locations');
+    
+    struct_h = whos('multicolor_cell_locations');
+    bytes_in_struct = struct_h.bytes;
+    if bytes_in_struct < 2e9
+        save(cell_id_save_path, '-struct', 'multicolor_cell_locations');
+    else
+        disp('struct > 2 GB, saving in -v7.3');
+        save(cell_id_save_path, '-struct', 'multicolor_cell_locations', '-v7.3');
+    end
 end
