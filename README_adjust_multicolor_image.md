@@ -23,14 +23,11 @@ The default values should be adequate
 
 **Rotate:** Rotates around the Z axis.
 
-**Roll:** Rolls the worm along the X axis. Note that doing so requires interpolating along the Z dimension which is not as well sampled. This also slows the program down due to increasing the matrix size.
-
 #### Adjustments are applied to the image in the following order:
 * Crop
-* Gamma
 * Background Subtraction
+* Gamma
 * Weights
 * Flip X
 * Flip Y
 * Rotation
-* Roll
