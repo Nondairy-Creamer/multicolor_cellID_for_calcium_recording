@@ -13,9 +13,11 @@ The default values should be adequate
 
 **Crop:** Click-drag-release a rectangle around the head. Removes the portion of the image not in the box
 
-**Subtract Background:** Click points sequentially to create a polygon around a region of space with no fluorescence. This is very useful for dim or bleached images. Empirically this seems to work better after gamma adjustment.
+**Subtract Background:** Click points sequentially to create a polygon around a region of space with no fluorescence. This is very useful for dim or bleached images.
 
-**Remove Outliers:** Click points sequentially to create a polygon around the neurons. Sets all other values** to 0
+**Select Outliers:** Click points sequentially to create a polygon around the neurons. Sets all other values to 0
+
+**Clear Outliers:** Removes previous selections of outliers
 
 **Reset Sliders:** Resets all sliders to the last saved value
 

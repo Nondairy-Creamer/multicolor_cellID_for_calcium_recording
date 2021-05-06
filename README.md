@@ -67,7 +67,7 @@ In the GUI take the following actions:
 * Standard orientation is to have the worm lying on its right side facing the left
 * Click subtract background button and outline a region where there is no fluorescence
 * Adjust the gamma of the green channel if necessary
-* Remove outliers tool will set everything inside the region to 0
+* Remove outliers tool will set everything inside the region to 0. use the clear outliers button if you make a mistake
 * See **README_adjust_multicolor_image.md** for more info
 
 #### S2b - Find cell body locations of the multicolor image
