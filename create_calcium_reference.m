@@ -1,4 +1,4 @@
-function create_calcium_reference_immobile()
+function create_calcium_reference()
     % create_calcium_reference  Average together the first n volumes of a
     % calcium recording together. We will use this average volume to get
     % initial cell body locations
