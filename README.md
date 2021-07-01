@@ -17,7 +17,7 @@ Download yamlmatlab and add it to your MATLAB path
 
 ## Usage
 #### NOTES:
-* Steps 1 and 2 can be performed in parallel
+* Steps 1 and 2 can be performed in parallel for immobilized worms. For moving worms they should be performed sequentially.
 * If you are only labeling multicolor data and not aligning it to calcium data, you only need to perform Steps 2 and 4
 * If you re-run calcium extraction and want to apply your cell IDs to the new calcium traces you only need to perform Step 3 and run `update_assignment_labels`. All your cell ID information is saved and will be applied to the newly tracked cells.
 * We have 2 images of the worm and 3 sets of cell point clouds that are being aligned
@@ -31,49 +31,57 @@ Record multicolor and calcium data
 Move the multicolor imaging folder in the calcium imaging brainscanner folder
 * Only necessary if you are trying to label calcium data using multicolor data
 
-### Step 1 - Make a Calcium Reference Image
-#### S1a - Extract calcium traces
-Extract calcium traces in individual neurons
-using the 3dbrain pipeline
-https://github.com/leiferlab/3dbrain
-
-#### S1b - Extract cell body locations of calcium image
-Run `create_calcium_reference`
-* Select the brainscanner folder or a folder containing brainscanner folders
-* Will recursively search through the selected directory and create a calcium reference for each brainscanner folder it finds
-* Generates **calcium_data_average_stack.mat**
-
-Run `visualize_light`
-In the GUI take the following actions
-* Load the **calcium_data_average_stack.mat** into the NeuroPAL software
-* Preprocessing > Artifact Removal > Manual
-* Draw a region around any autofluorescence in the gut and any other oddities
-* Auto-Detect
-
-### Step 2 - Initialize Multicolor Data
-#### S2a - Create neuropal input from multicolor data
+### Step 1 - Initialize Multicolor Data
+#### S1a - Create neuropal input from multicolor data
 Run `create_multicolor_adjustment_file`
 * Select the multicolor folder or a folder containing multicolor folders
 * Will recursively search through the selected directory and create a multicolor adjustment file fore each
 * Generates **multicolor_adjustment.mat**
 
 Run `adjust_multicolor_image`
-* Select the **multicolor_adjustment.mat** file in the multicolor folder
 * Generates **neuropal_data.mat**
 
 In the GUI take the following actions:
+* Click Load and select the **multicolor_adjustment.mat** file in the multicolor folder
 * Crop the image before any other manipulations to increase speed.
-* Attempt to crop so that the same neurons are visible in the multicolor worm as in the calcium reference. This will significantly improve assignment to the calcium recording.
+* Attempt to crop so that the same neurons are visible in the multicolor worm as in the calcium reference. This will significantly improve assignment to the calcium recording
 * Standard orientation is to have the worm lying on its right side facing the left
 * Click subtract background button and outline a region where there is no fluorescence
 * Adjust the gamma of the green channel if necessary
 * Remove outliers tool will set everything inside the region to 0. use the clear outliers button if you make a mistake
+* Save
 * See **README_adjust_multicolor_image.md** for more info
 
-#### S2b - Find cell body locations of the multicolor image
+#### S1b - Find cell body locations of the multicolor image
 Run `visualize_light`
 In the GUI take the following actions
 * Load the **neuropal_data.mat** from the multicolor folder into the NeuroPAL software
+* Auto-Detect
+
+### Step 2 - Make a Calcium Reference Image
+#### S2a - Extract calcium traces
+Extract calcium traces in individual neurons
+using the 3dbrain pipeline
+https://github.com/leiferlab/3dbrain
+
+#### S2b - Extract cell body locations of calcium image
+Run `create_calcium_reference`
+* Select the brainscanner folder or a folder containing brainscanner folders
+* Generates **calcium_data_average_stack.mat**
+
+In the GUI take the following actions:
+* Click load and select the brainscanner folder
+* For immobilized worms: Simply choose the number of frames to average together
+* For moving worms: scroll through the frame slider on the bottom to find a frame where the posture of the worm matches the multicolor image on the right. If you don't see a multicolor image on the right make sure you completed Step 1
+* Use the rotation knob and x/y flip buttons to make sure the posture aligns with the multicolor worm. Note that these knobs won't change the data, they are only for viewing convenience.
+* Choose how many frames to average. More frames will reduce noise, but if the worm is moving fast it will blur the neurons making cell assignment difficult. Default of 1 frame.
+* Save
+
+Run `visualize_light`
+In the GUI take the following actions
+* Load the **calcium_data_average_stack.mat** into the NeuroPAL software
+* Preprocessing > Artifact Removal > Manual
+* Draw a region around any autofluorescence in the gut and any other oddities
 * Auto-Detect
 
 ### Step 3 - Align the Multicolor Labels with the Calcium Recording
