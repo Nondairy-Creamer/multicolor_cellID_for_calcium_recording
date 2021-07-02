@@ -18,7 +18,7 @@ Download yamlmatlab and add it to your MATLAB path
 ## Usage
 #### NOTES:
 * Steps 1 and 2 can be performed in parallel for immobilized worms. For moving worms they should be performed sequentially.
-* If you are only labeling multicolor data and not aligning it to calcium data, you only need to perform Steps 2 and 4
+* If you are only labeling multicolor data and not aligning it to calcium data, you only need to perform Steps 1 and 4
 * If you re-run calcium extraction and want to apply your cell IDs to the new calcium traces you only need to perform Step 3 and run `update_assignment_labels`. All your cell ID information is saved and will be applied to the newly tracked cells.
 * We have 2 images of the worm and 3 sets of cell point clouds that are being aligned
  * Multicolor: Cell bodies identified using the multicolor image
