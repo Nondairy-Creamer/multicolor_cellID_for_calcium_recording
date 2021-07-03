@@ -24,18 +24,15 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     % accuracy
     normalize_by_distance = false;
     
-    %% parameters
     config = get_config();
     
-    % stack to align calcium data to
-    calcium_index = config.volumes_to_grab{1};
-    
+    %% parameters
     assignment_algorithm = 'nearest';
 %     assignment_algorithm = 'hungarian';
     
     %% select brainscanner folder
     if isempty(calcium_folder)
-        calcium_folder = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
+        calcium_folder = uigetdir(config.data_location, 'Select the brainscanner folder');
         
         if all(calcium_folder == 0)
             return;
@@ -48,6 +45,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     %% read cell body locations
     calcium_cell_locations = read_cell_locations(fullfile(calcium_folder, 'calcium_data_average_stack_ID.mat'));
     calcium_data = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
+    calcium_index = round(calcium_data.stack_ind + calcium_data.stack_size/2);
     shift_val = calcium_data.shift_val;
     calcium_scale = calcium_data.info.scale;
     calcium_cell_locations = calcium_cell_locations .* calcium_scale';
@@ -152,6 +150,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     rotation = 0;
     flipX = false;
     flipY = false;
+    jump_value = 'Assigned Neuron';
 
     %% plot alignment
     if plot_alignment_figures
@@ -218,6 +217,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     output_struct.assignments.rotation = rotation;
     output_struct.assignments.flipX = flipX;
     output_struct.assignments.flipY = flipY;
+    output_struct.assignments.jump_value = jump_value;
     
     save(fullfile(calcium_folder, 'calcium_to_multicolor_alignment.mat'), '-struct', 'output_struct');
 end

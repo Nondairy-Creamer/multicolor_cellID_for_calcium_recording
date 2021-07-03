@@ -1,7 +1,4 @@
-function stack = load_multicolor_from_dat(data_folder)
-    config = get_config();
-    cmos_background_value = config.cmos_background_value;
-    
+function stack = load_multicolor_from_dat(data_folder)    
     % z location of the microscope
     piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));
     nZ = length(piezo_position);
@@ -43,8 +40,6 @@ function stack = load_multicolor_from_dat(data_folder)
     % why we read an extra two but oh well
     pixelValues = fread(Fid,frame_size*nFrames + 2,'uint16',0,'l');
     stack = reshape(pixelValues(3:end), [nX, nY, nChannel, nZ]);
-    
-    stack = stack - cmos_background_value;
     
     stack = stack ./ exposure_time;
     

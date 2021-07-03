@@ -5,7 +5,7 @@ function create_multicolor_adjustment_file()
     
     config = get_config();
     
-    data_folder_in = uigetdir(config.multicolor_path, 'Select the multicolor folder');
+    data_folder_in = uigetdir(config.data_location, 'Select the multicolor folder');
 
     if all(data_folder_in == 0)
         return;

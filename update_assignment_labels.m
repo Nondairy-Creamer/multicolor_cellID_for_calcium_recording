@@ -1,7 +1,7 @@
 function update_assignment_labels()
     config = get_config();
 
-    data_folder_in = uigetdir(config.panneuronal_path, 'Select the brainscanner folder');
+    data_folder_in = uigetdir(config.data_location, 'Select the brainscanner folder');
     
     if all(data_folder_in == 0)
         return;

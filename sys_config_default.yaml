@@ -1,15 +1,3 @@
-# number of frames per stack in calcium recording are not constant
-# choose how many frames to keep and average over
-num_frames_to_keep: 32
-
-# choose which volumes to average over. Usually good to average around
-# 2s and start 100 volumes in to avoid issues at the beginning
-volumes_to_grab: [100, 111]
-
-# the camera pixel values have a constant offset from 0. However this depends on pre filtering
-# in general just set to 0 and do background sub later
-cmos_background_value: 0
-
 # scale of calcium recordings in microns
 calcium_scale: [0.42, 0.42, 1.5152]
 
@@ -23,9 +11,6 @@ multicolor_refernce_channel: 'mCherry'
 # confirmation dialogue block
 num_files_check: 5
 
-# Location of panneuronal files on this machine
-panneuronal_path: '/projects/LEIFER/PanNeuronal'
-
-# Location of multicolor files on this machine. In general these files are inside the panneuronal brainscanner folder
-multicolor_path: '/projects/LEIFER/PanNeuronal'
+# Location of panneuronal and multicolor files on this machine
+data_location: '/projects/LEIFER/PanNeuronal'
 
