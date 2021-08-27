@@ -1,4 +1,8 @@
-function create_multicolor_adjustment_file()
+function create_multicolor_adjustment_file(do_spatial_alignment)
+    if nargin < 1
+        do_spatial_alignment = true;
+    end
+
     % create_multicolor_adjust_file  Reads the multicolor.dat and generates
     % an input file for adjust_multicolor_image for preprocessing the
     % multicolor volume
@@ -59,8 +63,12 @@ function create_multicolor_adjustment_file()
             end
         end
 
-        % spatially align the data to the panneuronal marker
-        data_aligned = align_color_channels(selected_channels);
+        if do_spatial_alignment
+            % spatially align the data to the panneuronal marker
+            data_aligned = align_color_channels(selected_channels);
+        else
+            data_aligned = selected_channels;
+        end
 
         % get z step size
         piezo_position = csvread(fullfile(data_folder, 'piezoPosition.txt'));
