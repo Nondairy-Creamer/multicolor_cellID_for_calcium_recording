@@ -45,7 +45,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     %% read cell body locations
     calcium_cell_locations = read_cell_locations(fullfile(calcium_folder, 'calcium_data_average_stack_ID.mat'));
     calcium_data = load(fullfile(calcium_folder, 'calcium_data_average_stack.mat'));
-    calcium_index = round(calcium_data.stack_ind + calcium_data.stack_size/2);
+    calcium_index = calcium_data.stack_ind + round((calcium_data.stack_size-1)/2);
     shift_val = calcium_data.shift_val;
     calcium_scale = calcium_data.info.scale;
     calcium_cell_locations = calcium_cell_locations .* calcium_scale';
@@ -105,22 +105,16 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     % frame basis. Here we create a vector where each entry represents
     % a unique cell whether or not it is in the current frame
     tracked_cell_locations = nan(num_tracked_cells, 3);
-    t_loc = calcium_index;
-    while any(isnan(tracked_cell_locations(:)))
-        cell_id_at_t = tracked_cell_locations_in(t_loc).trackIdx;
+    
+    cell_id_at_t = tracked_cell_locations_in(calcium_index).trackIdx;
 
-        for cc = 1:length(cell_id_at_t)
-            this_cell = cell_id_at_t(cc);
-            if ~any(isnan(this_cell))
-                if any(isnan(tracked_cell_locations(this_cell)))
-                    tracked_cell_locations(cell_id_at_t(cc), :) = tracked_cell_locations_in(t_loc).rawPoints(cc, :);
-                end
-            end
+    for cc = 1:length(cell_id_at_t)
+        this_cell = cell_id_at_t(cc);
+        if ~isnan(this_cell)
+            tracked_cell_locations(cell_id_at_t(cc), :) = tracked_cell_locations_in(calcium_index).rawPoints(cc, :);
         end
-
-        t_loc = t_loc + 1;
     end
-
+    
     % when we flip the image we trim off images in the z stack. adjust the
     % z position here so are cells are not offset.
     if shift_val > 0
