@@ -39,10 +39,16 @@ function update_assignment_labels()
                 
             % update the assignment file and save it
             output_assignment = previous_assignment;
-
+            
+            % neuropal data only includes only points that have been
+            % assigned, so pair down to the the indicies of the multicolor
+            % cells that have been assigned
+            [~, ~, trimmed_assignments] = unique([0; previous_assignment]);
+            trimmed_assignments = trimmed_assignments(2:end) - 1;
+            
             % update all the cell id labels
-            for nn = 1:length(previous_assignment)
-                this_assignment = previous_assignment(nn);
+            for nn = 1:length(trimmed_assignments)
+                this_assignment = trimmed_assignments(nn);
                 if this_assignment ~= 0
                     output_assignment.labels.human_labels{nn} = human_labels{this_assignment};
                     output_assignment.labels.auto_labels{nn} = auto_labels{this_assignment};
