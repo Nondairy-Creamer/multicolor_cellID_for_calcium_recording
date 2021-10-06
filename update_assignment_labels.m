@@ -36,8 +36,8 @@ function update_assignment_labels(data_folder_in)
             
             human_labels = {cell_ids.neurons.neurons.annotation}';
             auto_labels = {cell_ids.neurons.neurons.deterministic_id}';
-            user_labeled = cat(1, cell_ids.neurons.neurons.position);
-            auto_confidence = cat(1, cell_ids.neurons.neurons.annotation_confidence)==1;
+            user_labeled = cat(1, cell_ids.neurons.neurons.annotation_confidence)==1;
+            auto_confidence = cat(1, cell_ids.neurons.neurons.annotation_confidence);
                 
             % update the assignment file and save it
             output_assignment = previous_assignment;
@@ -45,7 +45,7 @@ function update_assignment_labels(data_folder_in)
             % neuropal data only includes only points that have been
             % assigned, so pair down to the the indicies of the multicolor
             % cells that have been assigned
-            [~, ~, trimmed_assignments] = unique([0; previous_assignment]);
+            [~, ~, trimmed_assignments] = unique([0; previous_assignment.assignments]);
             trimmed_assignments = trimmed_assignments(2:end) - 1;
             
             % update all the cell id labels
@@ -55,13 +55,8 @@ function update_assignment_labels(data_folder_in)
                     output_assignment.labels.human_labels{nn} = human_labels{this_assignment};
                     output_assignment.labels.auto_labels{nn} = auto_labels{this_assignment};
                     output_assignment.labels.user_labeled(nn) = user_labeled(this_assignment);
-<<<<<<< HEAD
-                    output_assignment.labels.auto_confidence{nn} = auto_confidence(this_assignment);
-                    
-                    output_assignment.neuropal_data.neurons.neurons(this_assignment) = cell_ids.neurons.neurons(this_assignment);
-=======
                     output_assignment.labels.auto_confidence(nn) = auto_confidence(this_assignment);
->>>>>>> a591466baa7d48a5268505b3b708694012e486f7
+                    output_assignment.neuropal_data.neurons.neurons(previous_assignment.assignments(nn)) = cell_ids.neurons.neurons(this_assignment);
                 else
                     output_assignment.labels.tracked_human_labels{nn} = '';
                     output_assignment.labels.tracked_auto_labels{nn} = '';
