@@ -1,15 +1,17 @@
-function update_assignment_labels()
+function update_assignment_labels(data_folder_in)
     config = get_config();
 
-    data_folder_in = uigetdir(config.data_location, 'Select the brainscanner folder');
+    if nargin < 1
+        data_folder_in = uigetdir(config.data_location, 'Select the brainscanner folder');
+    end
     
     if all(data_folder_in == 0)
         return;
     end
-    
+
     % find all multicolor folders
     panneuronal_folders = dir(fullfile(data_folder_in, '**', 'calcium_to_multicolor_assignments.mat'));
-
+    
     num_files = length(panneuronal_folders);
     
     if num_files > config.num_files_check
@@ -54,6 +56,8 @@ function update_assignment_labels()
                     output_assignment.labels.auto_labels{nn} = auto_labels{this_assignment};
                     output_assignment.labels.user_labeled(nn) = user_labeled(this_assignment);
                     output_assignment.labels.auto_confidence{nn} = auto_confidence(this_assignment);
+                    
+                    output_assignment.neuropal_data.neurons.neurons(this_assignment) = cell_ids.neurons.neurons(this_assignment);
                 else
                     output_assignment.labels.tracked_human_labels{nn} = '';
                     output_assignment.labels.tracked_auto_labels{nn} = '';
