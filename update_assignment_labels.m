@@ -32,8 +32,8 @@ function update_assignment_labels()
             % load in the assignment
             previous_assignment = load(assignment_path);
             
-            human_labels = cat(1, cell_ids.neurons.neurons.annotation);
-            auto_labels = cat(1, cell_ids.neurons.neurons.deterministic_id);
+            human_labels = {cell_ids.neurons.neurons.annotation}';
+            auto_labels = {cell_ids.neurons.neurons.deterministic_id}';
             user_labeled = cat(1, cell_ids.neurons.neurons.position);
             auto_confidence = cat(1, cell_ids.neurons.neurons.annotation_confidence)==1;
                 
@@ -53,12 +53,12 @@ function update_assignment_labels()
                     output_assignment.labels.human_labels{nn} = human_labels{this_assignment};
                     output_assignment.labels.auto_labels{nn} = auto_labels{this_assignment};
                     output_assignment.labels.user_labeled(nn) = user_labeled(this_assignment);
-                    output_assignment.labels.auto_confidence{nn} = auto_confidence(this_assignment);
+                    output_assignment.labels.auto_confidence(nn) = auto_confidence(this_assignment);
                 else
                     output_assignment.labels.tracked_human_labels{nn} = '';
                     output_assignment.labels.tracked_auto_labels{nn} = '';
                     output_assignment.labels.user_labeled(nn) = false;
-                    output_assignment.labels.auto_confidence{nn} = 0;
+                    output_assignment.labels.auto_confidence(nn) = 0;
                 end
             end
 
