@@ -21,15 +21,15 @@ Download yamlmatlab and add it to your MATLAB path
 * If you are only labeling multicolor data and not aligning it to calcium data, you only need to perform Steps 1 and 4
 * If you re-run calcium extraction and want to apply your cell IDs to the new calcium traces you only need to perform Step 3 and run `update_assignment_labels`. All your cell ID information is saved and will be applied to the newly tracked cells.
 * We have 2 images of the worm and 3 sets of cell point clouds that are being aligned
- * Multicolor: Cell bodies identified using the multicolor image
- * Calcium: All cell bodies segmented from the calcium recording
- * Tracked: Cells from the calcium recording that we have followed across time. These cells are a subset of all calcium cells
+   * Multicolor: Cell bodies identified using the multicolor image
+   * Calcium: All cell bodies segmented from the calcium recording
+   * Tracked: Cells from the calcium recording that we have followed across time. These cells are a subset of all calcium cells
 * You can work locally starting at step S2b, copy these files locally
- * multicolor*/
- * calcium_data_average_stack.mat
- * heatData.mat
- * hiResData.mat
- * PointsStats2.mat
+   * multicolor*/
+   * calcium_data_average_stack.mat
+   * heatData.mat
+   * hiResData.mat
+   * PointsStats2.mat
 
 ### Step 0
 Record multicolor and calcium data
@@ -141,23 +141,23 @@ Edited by `check_cell_assignment` and `update_assignment_labels`
 
 This is the final output of this pipeline. The most important variables for the user are bolded. Contains:
 * **assignments**: The link between the cell body locations in the multicolor image and the neurons tracked by the calcium extraction software
- * calcium_to_multicolor_assignments: all cell bodies in the calcium recording to all cell bodies in the multicolor recording
- * tracked_to_multicolor_assignments: automatic assignment of cells tracked in the calcium recording to the cell bodies in the multicolor recording
- * **tracked_to_multicolor_assignments_user_adjusted**: User labeled assignment of cells tracked in the calcium recording to the cell bodies in the multicolor recording. set by `check_cell_assignment`
- * user_assigned_cells: which cells the user manually assigned using `check_cell_assignment`
- * rotation/flipX/flipY: Orientation/flip set by user in `check_cell_assignment`
+   * calcium_to_multicolor_assignments: all cell bodies in the calcium recording to all cell bodies in the multicolor recording
+   * tracked_to_multicolor_assignments: automatic assignment of cells tracked in the calcium recording to the cell bodies in the multicolor recording
+   * **tracked_to_multicolor_assignments_user_adjusted**: User labeled assignment of cells tracked in the calcium recording to the cell bodies in the multicolor recording. set by `check_cell_assignment`
+   * user_assigned_cells: which cells the user manually assigned using `check_cell_assignment`
+   * rotation/flipX/flipY: Orientation/flip set by user in `check_cell_assignment`
 * **calcium_data**: This is the extracted calcium traces for the labeled cells, comes from headData.mat extracted by the 3d Brain pipeline. This is saved because it is fairly small and keeps the labels linked to data even if you run other analysis that change heatData.mat
- * **r/gRaw**: the raw fluorescence values of the red/green channel in the cell body of the neuron over time
- * **Ratio2**: Activity of each cell over time. This is some normalization of the green channel by red performed by the 3d Brain pipeline.
+   * **r/gRaw**: the raw fluorescence values of the red/green channel in the cell body of the neuron over time
+   * **Ratio2**: Activity of each cell over time. This is some normalization of the green channel by red performed by the 3d Brain pipeline.
 * **labels**: The cell ID labels (AVA, RIM, etc) for the neurons in the calcium recording
- * **tracked_human_labels**: labels of the cells tracked by the calcium extraction software. Order is the same as in the rows of the variables in heatData.mat
- * tracked_auto_labels: labels automatically generated and human labeled by the NeuroPAL software. Automatic labels tend to not be reliable, so we rely instead on the human labels
- * multicolor_human/auto_labels: same as tracked, but is labels for all cells in the multicolor image. If you are using a trimmed multicolor image (see Step 3c), these are the labels from that image.
- * user_labeled: boolean of which cells in the multicolor image were labeled
- * auto_confidence: confidence of labeling by the automatic software, not reliable at the moment
+   * **tracked_human_labels**: labels of the cells tracked by the calcium extraction software. Order is the same as in the rows of the variables in heatData.mat
+   * tracked_auto_labels: labels automatically generated and human labeled by the NeuroPAL software. Automatic labels tend to not be reliable, so we rely instead on the human labels
+   * multicolor_human/auto_labels: same as tracked, but is labels for all cells in the multicolor image. If you are using a trimmed multicolor image (see Step 3c), these are the labels from that image.
+   * user_labeled: boolean of which cells in the multicolor image were labeled
+   * auto_confidence: confidence of labeling by the automatic software, not reliable at the moment
 * **locations**: The cell body locations for both the multicolor image and the calcium recording.
- * multicolor/calcium_scale: scale in microns of the multicolor/calcium image
- * calcium/multicolor/tracked_cell_locations: cell locations of the calcium/multicolor data and the cell locations tracked by calcium extraction software.
+   * multicolor/calcium_scale: scale in microns of the multicolor/calcium image
+   * calcium/multicolor/tracked_cell_locations: cell locations of the calcium/multicolor data and the cell locations tracked by calcium extraction software.
 
 #### multicolor_adjustment.mat
 Generated by `create_multicolor_adjustment_file`
