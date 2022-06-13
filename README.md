@@ -24,7 +24,7 @@ Download yamlmatlab and add it to your MATLAB path
    * Multicolor: Cell bodies identified using the multicolor image
    * Calcium: All cell bodies segmented from the calcium recording
    * Tracked: Cells from the calcium recording that we have followed across time. These cells are a subset of all calcium cells
-* You can work locally starting at step S2b, copy these files locally
+* If you are working on a server, you can begin work locally starting at step S2b Run `visualize_light`. Copy these files to your computer
    * multicolor*/
    * calcium_data_average_stack.mat
    * heatData.mat
