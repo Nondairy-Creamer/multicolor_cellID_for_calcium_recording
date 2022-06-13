@@ -58,8 +58,8 @@ function update_assignment_labels(data_folder_in)
                     output_assignment.labels.auto_confidence(nn) = auto_confidence(this_assignment);
                     output_assignment.neuropal_data.neurons.neurons(previous_assignment.assignments(nn)) = cell_ids.neurons.neurons(this_assignment);
                 else
-                    output_assignment.labels.tracked_human_labels{nn} = '';
-                    output_assignment.labels.tracked_auto_labels{nn} = '';
+                    output_assignment.labels.human_labels{nn} = '';
+                    output_assignment.labels.auto_labels{nn} = '';
                     output_assignment.labels.user_labeled(nn) = false;
                     output_assignment.labels.auto_confidence(nn) = 0;
                 end
