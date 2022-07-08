@@ -5,9 +5,13 @@ NeuroPAL worms use 3 fluorophores and a panneuronal marker to enable cell segmen
 All code is in MATLAB and has been tested in 2019b and 2020a
 
 Install the Paninski Lab NeuroPAL software. Note that it has 2 other required packages. I suggest putting Multicolor cellID for Calcium Recording, the NeuroPAL code, and the NeuroPAL code dependencies into one folder and adding that entire folder to your MATLAB path.
+
 My fork (preferred):
+
 https://github.com/Nondairy-Creamer/CELL_ID
+
 original:
+
 https://github.com/amin-nejat/CELL_ID
 
 Download this repo and add it to your MATLAB path
