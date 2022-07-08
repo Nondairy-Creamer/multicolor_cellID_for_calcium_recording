@@ -15,7 +15,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     if nargin < 2
         % plot some figures showing assignments from calcium to multicolor
         % image
-        plot_alignment_figures = true;
+        plot_alignment_figures = false;
     end
     
     % i wrote this to adjust for the fact that different light paths might
@@ -130,6 +130,7 @@ function align_multicolor_to_calcium_imaging(calcium_folder, plot_alignment_figu
     tracked_cell_locations_meansub = tracked_cell_locations - calcium_cell_location_mean;
     tracked_cell_locations_proj = tracked_cell_locations_meansub * calcium_cell_locations_pc;
     tracked_cell_locations_proj = tracked_cell_locations_proj .* calcium_flip_this_dim;
+%     tracked_cell_locations_proj(:, 3) = tracked_cell_locations_proj(:, 3) * (2 * ~calcium_data.flip_cells_z - 1);
     
     if normalize_by_distance
         tracked_cell_locations_proj = tracked_cell_locations_proj ./ mean(calcium_min_dist_to_cells);
