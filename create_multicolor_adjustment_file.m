@@ -47,9 +47,9 @@ function create_multicolor_adjustment_file(do_spatial_alignment)
                 end
             end
             
-            if channel_ind(cc) == 0
-                warning(['Could not find one of the channel ' channels_to_use{cc} ', setting that channel to zeros.']);
-            end
+%             if channel_ind(cc) == 0
+%                 warning(['Could not find one of the channel ' channels_to_use{cc} ', setting that channel to zeros.']);
+%             end
         end
 
         selected_channels = zeros(size(data,1), size(data,2), size(data,3), length(channel_ind));
