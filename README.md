@@ -36,6 +36,7 @@ Run `create_multicolor_adjustment_file`
 * Will recursively search through the selected directory and create a multicolor adjustment file fore each
 * Generates **multicolor_adjustment.mat**
 
+#### S1b - Standardize image color and position
 Run `adjust_multicolor_image`
 * Generates **neuropal_data.mat**
 
@@ -49,7 +50,7 @@ In the GUI take the following actions:
 * Save
 * See **README_adjust_multicolor_image.md** for more info
 
-#### S1b - Find cell body locations of the multicolor image
+#### S1c - Find cell body locations of the multicolor image
 Run `visualize_light`
 In the GUI take the following actions
 * Load the **neuropal_data.mat** from the multicolor folder into the NeuroPAL software
@@ -75,7 +76,9 @@ In the GUI take the following actions
 * The example data for OH15262 can be found on tigressdata at /projects/LEIFER/neuropal_example_data
 * Note that there are separate manuals for NeuroPAL w and w/o GCaMP (OH15500 and OH15262)
 
-You can start / stop labeling as much as you like. Importantly, whenever you finish call `update_assignment_labels` to update **calcium_to_multicolor_alignment.mat** where the labels are stored and can be related to the calcium recording
+Run `update_assignment_labels`
+
+You can start / stop labeling as much as you like, just make sure you call `update_assignment_labels` to update **calcium_to_multicolor_assignments.mat** which stores the labels in the same order as the calcium recording
 
 ## Documents Glossary
 
