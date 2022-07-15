@@ -62,13 +62,13 @@ Run `assign_calcium_to_multicolor`
 * Use the rotation knob and flip x/y to get the worm to face the left with ventral cord down
 * Unclick "Display Max Intensity" to allow you to scroll through z planes
 * First click a neuron in the calcium image then click the corresponding neuron in the multicolor image
- * Right clicking a multicolor cell removes the current calcium cell assignment
- * While holding 'a'
-  * Left clicking adds a neuron to the multicolor image
-  * Right clicking removes a neuron from the multicolor image
- * While holding 's'
-  * Left clicking a multicolor neuron will highlight the calcium cell it was previously assigned to
- * Note: unfortunately sometimes these commands don't work perfectly. If you click a blank space of the multicolor image before holding down 'a' or 's' it can sometimes help.
+  * Right clicking a multicolor cell removes the current calcium cell assignment
+  * While holding 'a'
+      * Left clicking adds a neuron to the multicolor image
+      * Right clicking removes a neuron from the multicolor image
+  * While holding 's'
+    * Left clicking a multicolor neuron will highlight the calcium cell it was previously assigned to
+  * Note: unfortunately sometimes these commands don't work perfectly. If you click a blank space of the multicolor image before holding down 'a' or 's' it can sometimes help.
 * You can alternate between assigning cells and multicolor identification. Each cell that is assigned will show up in the multicolor image to be identified
 * Generates **calcium_to_multicolor_assignments.mat**
 * Edits **neuropal_data_ID.mat** to have only assigned neurons
