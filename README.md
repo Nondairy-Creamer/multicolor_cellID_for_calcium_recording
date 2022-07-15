@@ -19,7 +19,7 @@ Download yamlmatlab and add it to your MATLAB path
 ## Usage
 #### NOTES:
 * If you are only labeling multicolor data and not aligning it to calcium data, you only need to perform Steps 1 and 3
-* If you are working on a server, you can begin work locally starting at Step 3. Copy these files to your local computer. Note that if you want to assign more neurons (step 2) you should upload these files back to then proceed normally from step 2.
+* If you are working on a server, you can begin work locally starting at Step 3. Copy these files to your local computer in their own folder. Note that if you want to assign more neurons (step 2) you should upload these files back to then proceed normally from step 2.
    * multicolor*/
    * calcium_to_multicolor_assignments.mat
 
