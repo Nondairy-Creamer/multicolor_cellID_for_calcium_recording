@@ -22,6 +22,7 @@ Download yamlmatlab and add it to your MATLAB path
 * If you are working on a server, you can begin work locally starting at Step 3. Copy these files to your local computer in their own folder. Note that if you want to assign more neurons (step 2) you should upload these files back to then proceed normally from step 2.
    * multicolor*/
    * calcium_to_multicolor_assignments.mat
+* If you want to start over with assignments, just start at step S1c or before and delete **calcium_to_multicolor_assignments.mat**
 
 ### Step 0
 Record multicolor and calcium data
